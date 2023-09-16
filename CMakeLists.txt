@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
-project(LongArithmetic)
+project(LongArithmeticLib)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
-add_library(LongArithmetic
-    src/LongArithmetic.cpp
-)
+add_subdirectory(src)
 
-target_include_directories(LongArithmetic PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+# Build the tests
+enable_testing()
+add_subdirectory(tests)
+
+# Build the example
+add_subdirectory(examples)
