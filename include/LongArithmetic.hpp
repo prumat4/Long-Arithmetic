@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <array>
+#include <math.h>
 
 #define ARRAY_SIZE 32
 
@@ -16,9 +17,13 @@ private:
     bool sign;
 
 public:
-    friend std::ostream& operator<< (std::ostream& os, const LongNumber& ln);
+    friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
     
     LongNumber();
+    LongNumber(int number);
     LongNumber(std::array<uint64_t, ARRAY_SIZE> arr);
     LongNumber(const LongNumber& other);
+
+    LongNumber& operator = (const LongNumber& other);
+    LongNumber operator + (const LongNumber& other);
 };
