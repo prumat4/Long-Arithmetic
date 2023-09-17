@@ -1,7 +1,8 @@
 #include "LongArithmetic.hpp"
 
-#include <iostream>
-
 int main() {
+    LongNumber ln;
+    std::cout << ln << std::endl;
+
     return 0;
 }
