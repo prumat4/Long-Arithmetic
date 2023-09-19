@@ -13,14 +13,14 @@
 class LongNumber {
 private:
     /// 64*32 = 2048 btis 
-    std::array<uint64_t, ARRAY_SIZE> number;
-    bool sign;
+    std::array<uint64_t, ARRAY_SIZE> data;
 
 public:
     friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
     
     LongNumber();
-    LongNumber(int number);
+    LongNumber(std::string some_number);
+    LongNumber(int some_int);
     LongNumber(std::array<uint64_t, ARRAY_SIZE> arr);
     LongNumber(const LongNumber& other);
 
