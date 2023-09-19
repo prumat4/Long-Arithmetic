@@ -17,11 +17,13 @@ LongNumber LongNumber::operator+(const LongNumber& other) {
     uint64_t carry = 0;
     LongNumber answer(0);
 
-    for(int i = 0; i < ARRAY_SIZE; i++) {
+    for(int i = 0; i < ARRAY_SIZE - 1; i++) {
         uint64_t  temp = data.at(i) + other.data.at(i) + carry;
         answer.data.at(i) = temp & uint64_t(pow(2, 64) - 1);
         carry = temp >> 64;
     }
+
+    std::cout << answer;
 
     return *this;
 }
@@ -33,12 +35,17 @@ LongNumber& LongNumber::operator=(const LongNumber &other){
 }
 
 std::ostream& operator<<(std::ostream& os, const LongNumber& ln) {
-    for(const auto& element : ln.data) {
+    // for(const auto& element : ln.data) {
         // for (int i = 63; i >= 0; i--) {
         //     os << ((element >> i) & 1);
         // }
             // os << " ";
-        os << element;
+        // os << element;
+    // }
+    for(int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        // os << ln.data.at(i) << " ";
+        os << ln.data.at(i);
+    
     }
     
     return os;

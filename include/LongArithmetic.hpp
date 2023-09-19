@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <array>
+#include <algorithm>
 #include <math.h>
 
 #define ARRAY_SIZE 32
