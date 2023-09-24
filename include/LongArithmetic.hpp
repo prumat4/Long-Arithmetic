@@ -30,5 +30,9 @@ public:
     LongNumber operator * (const LongNumber& other);
     LongNumber operator - (const LongNumber& other);
 
-    
+    bool operator == (const LongNumber& other);
+    bool operator != (const LongNumber& other);
+    bool operator > (const LongNumber& other);
+    bool operator < (const LongNumber& other);
+
 };

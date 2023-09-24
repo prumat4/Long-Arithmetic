@@ -60,3 +60,30 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
 
     return difference;
 }
+
+bool LongNumber::operator == (const LongNumber& other) {
+    int i = data.size() - 1;
+    while(data.at(i) == other.data.at(i))
+        i--;
+
+    return i == -1;
+}
+
+bool LongNumber::operator != (const LongNumber& other) {
+    return !(*this == other);
+}
+
+bool LongNumber::operator > (const LongNumber& other) {
+    int i = data.size() - 1;
+    while(data.at(i) == other.data.at(i))
+        i--;
+
+    return data.at(i) > other.data.at(i);
+}
+
+bool LongNumber::operator < (const LongNumber& other) {
+    return !(*this > other);
+}
+
+
+
