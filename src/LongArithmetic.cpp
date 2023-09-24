@@ -29,14 +29,61 @@ LongNumber& LongNumber::operator = (const LongNumber &other){
     return *this;
 }
 
-LongNumber& LongNumber::operator + (const LongNumber& other) {
+LongNumber LongNumber::operator + (const LongNumber& other) {
     uint32_t carry = 0;
+    LongNumber sum;
 
     for(int i = 0; i < data.size(); i++) {
         uint64_t temp = data.at(i) + other.data.at(i) + carry;
-        data.at(i) = temp & uint64_t(pow(2, 32) - 1);
+        sum.data.at(i) = temp & uint64_t(pow(2, 32) - 1);
         carry = temp >> 32;
     }
 
-    return *this;
+    return sum;
 }
+
+LongNumber LongNumber::operator - (const LongNumber& other) {
+    uint32_t borrow = 0;
+    LongNumber difference;
+    
+    for(int i = 0; i < data.size(); i++) {
+        uint64_t temp = data.at(i) - other.data.at(i);
+
+        if(temp >= 0) {
+            difference.data.at(i) = temp;
+            borrow = 0;
+        } else {
+            difference.data.at(i) = pow(2, 32) + temp;
+            borrow = 1;
+        }
+    }
+
+    return difference;
+}
+
+bool LongNumber::operator == (const LongNumber& other) {
+    int i = data.size() - 1;
+    while(data.at(i) == other.data.at(i))
+        i--;
+
+    return i == -1;
+}
+
+bool LongNumber::operator != (const LongNumber& other) {
+    return !(*this == other);
+}
+
+bool LongNumber::operator > (const LongNumber& other) {
+    int i = data.size() - 1;
+    while(data.at(i) == other.data.at(i))
+        i--;
+
+    return data.at(i) > other.data.at(i);
+}
+
+bool LongNumber::operator < (const LongNumber& other) {
+    return !(*this > other);
+}
+
+
+
