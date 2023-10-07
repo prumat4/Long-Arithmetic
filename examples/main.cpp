@@ -45,10 +45,11 @@ int main() {
     // std::cout << "ln1\n" << ln1 << std::endl;
     
     LongNumber ln3 = ln0 + ln1;
-    LongNumber ln4 = ln0 - ln1;
+    LongNumber ln4 = ln1 - ln0;
 
     // std::cout << "ln3\n" << ln3 << std::endl;
     std::cout << ln3.toBinaryString() << std::endl << std::endl;
+    std::cout << ln4.toBinaryString() << std::endl << std::endl;
 
     return 0;
 }

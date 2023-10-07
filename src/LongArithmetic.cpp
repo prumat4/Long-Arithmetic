@@ -4,18 +4,29 @@ LongNumber::LongNumber() {
     data.fill(0);
 }
 
+std::string LongNumber::removeLeadingZeros(std::string& binaryString) const {
+    size_t startPos = binaryString.find_first_not_of('0');
+    if (startPos != std::string::npos) 
+        binaryString = binaryString.substr(startPos);
+    else 
+        binaryString = "0"; 
+
+    return binaryString;
+}
+
 std::string LongNumber::toBinaryString() const {
     std::string binaryString;
     
     for (int i = data.size() - 1; i >= 0; i--) {
         uint32_t value = data[i];
         
-        
         for (int j = 31; j >= 0; j--) {
             binaryString += (value & (1 << j)) ? '1' : '0';
         }
     }
     
+    removeLeadingZeros(binaryString);
+
     return binaryString;
 }
 
@@ -71,15 +82,16 @@ LongNumber LongNumber::operator + (const LongNumber& other) {
 LongNumber LongNumber::operator - (const LongNumber& other) {
     uint32_t borrow = 0;
     LongNumber difference;
-    
+
     for(int i = 0; i < data.size(); i++) {
-        uint64_t temp = data.at(i) - other.data.at(i);
+        int64_t temp = static_cast<int64_t>(data.at(i)) - static_cast<int64_t>(other.data.at(i)) - borrow;
 
         if(temp >= 0) {
-            difference.data.at(i) = temp;
+            difference.data.at(i) = static_cast<uint32_t>(temp);
             borrow = 0;
         } else {
-            difference.data.at(i) = pow(2, 32) + temp;
+            // 1ULL = telling compiler that this 1 is unsigned long long type
+            difference.data.at(i) = static_cast<uint32_t>(temp + (1ULL << 32));
             borrow = 1;
         }
     }

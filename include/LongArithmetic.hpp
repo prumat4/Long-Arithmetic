@@ -14,6 +14,9 @@ private:
     /// 64*32 = 2048 btis 
     std::array<uint32_t, ARRAY_SIZE> data;
     // uint32_t multiplyOneDigit(const LongNumber& num, const uint32_t& digit, uint32_t& answer);
+private:
+    std::string removeLeadingZeros(std::string& binaryString) const;
+
 public:
     friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
     
