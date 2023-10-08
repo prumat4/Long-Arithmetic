@@ -84,7 +84,13 @@ int main() {
 
     LongNumber ln1(1844674407370551615);
     std::cout << ln1.toBinaryString() << std::endl;
-    std::cout << ln1.toHexString() << std::endl;
+    ln1 = ln1 << 2;
+    std::cout << ln1.toBinaryString() << std::endl;
+
+    LongNumber ln0(1844674407370551615);
+    std::cout << ln0.toBinaryString() << std::endl;
+    ln0 = ln0 >> 2;
+    std::cout << ln0.toBinaryString() << std::endl;
 
     return 0;
 }

@@ -244,6 +244,35 @@ bool LongNumber::operator >= (const LongNumber &other) {
     return (*this > other) || (*this == other);
 }
 
+LongNumber LongNumber::operator >> (const int shiftCount) {
+    LongNumber result = *this;
+    
+    for (int i = 0; i < shiftCount; i++) {
+        uint32_t carry = 0;
+        for (int j = 0; j < ARRAY_SIZE; j++) {
+            uint32_t temp = result.data[j];
+            result.data[j] = (temp >> 1) | (carry << 31);
+        }
+    }
+    
+    return result;
+}
+
+LongNumber LongNumber::operator << (const int shiftCount) {
+    LongNumber result = *this;
+    
+    for (int i = 0; i < shiftCount; i++) {
+        uint32_t carry = 0;
+        for (int j = ARRAY_SIZE - 1; j >= 0; j--) {
+            uint32_t temp = result.data[j];
+            result.data[j] = (temp << 1) | carry;
+            carry = (temp >> 31) & 1;
+        }
+    }
+    
+    return result;
+}
+
 LongNumber LongNumber::toSquare() {
     return (*this) * (*this);
 }
