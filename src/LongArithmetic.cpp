@@ -33,9 +33,8 @@ std::string LongNumber::toBinaryString() const {
     for (int i = data.size() - 1; i >= 0; i--) {
         uint32_t value = data[i];
         
-        for (int j = 31; j >= 0; j--) {
+        for (int j = 31; j >= 0; j--) 
             binaryString += (value & (1 << j)) ? '1' : '0';
-        }
     }
     
     removeLeadingZeros(binaryString);
@@ -52,11 +51,12 @@ std::string LongNumber::toHexString() const {
 
         for (int j = 7; j >= 0; j--) {
             char hexDigit = static_cast<char>((value >> (j * 4)) & 0xF);
-            if (hexDigit < 10) {
+            
+            if (hexDigit < 10) 
                 hexString += '0' + hexDigit;
-            } else {
+            else 
                 hexString += 'A' + (hexDigit - 10);
-            }
+            
         }
     }
 
@@ -87,11 +87,11 @@ void LongNumber::shiftDigitsToHigh(const uint16_t index) {
     }
 
     for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
-        if (i - index >= 0) {
+        if (i - index >= 0) 
             data[i] = data[i - index];
-        } else {
+        else 
             data[i] = 0;
-        }
+        
     }
 }
 
@@ -118,23 +118,6 @@ LongNumber LongNumber::operator * (const LongNumber& other) {
     }
 
     return res;
-}
-
-// should be smth that makes sense, because we have toBinaryString and will have toDecimal & toHex
-// probably this is useless and its should bit shift operation)
-// but wotk on it later
-std::ostream& operator << (std::ostream& os, const LongNumber& ln) {
-    // for(const auto& element : ln.data) {
-    //     for (int i = 31; i >= 0; i--) {
-    //         os << ((element >> i) & 1);
-    //     }
-    // }
-    for(int i = 0; i < ln.data.size(); i++) {
-        os << (ln.data.at(i)) << " ";
-    }
-    os << std::endl;
-
-    return os;
 }
 
 LongNumber& LongNumber::operator = (const LongNumber& other){
