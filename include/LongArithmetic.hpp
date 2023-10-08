@@ -13,22 +13,22 @@ class LongNumber {
 private:
     /// 64*32 = 2048 btis 
     std::array<uint32_t, ARRAY_SIZE> data;
-    // uint32_t multiplyOneDigit(const LongNumber& num, const uint32_t& digit, uint32_t& answer);
 private:
     std::string removeLeadingZeros(std::string& binaryString) const;
+    void shiftDigitsToHigh(const uint16_t index);
+    void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
 
 public:
     friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
     
     LongNumber();
-    // LongNumber(std::string some_number);
     // LongNumber(int some_int);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
     LongNumber(const LongNumber& other);
 
     LongNumber& operator = (const LongNumber& other);
     LongNumber operator + (const LongNumber& other);
-    // LongNumber operator * (const LongNumber& other);
+    LongNumber operator * (const LongNumber& other);
     LongNumber operator - (const LongNumber& other);
 
     bool operator == (const LongNumber& other);

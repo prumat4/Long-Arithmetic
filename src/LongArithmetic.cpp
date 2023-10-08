@@ -34,18 +34,49 @@ LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
 
 LongNumber::LongNumber(const LongNumber& other) : data(other.data) {}
 
-// uint32_t LongNumber::multiplyOneDigit(const LongNumber& num, const uint32_t& digit, uint32_t& answer) {
-//     uint32_t carry = 0;
+void LongNumber::shiftDigitsToHigh(const uint16_t index) {
+    if (index >= ARRAY_SIZE) {
+        data.fill(0);
+        return;
+    }
 
-//     for(int i = 0; i < num.data.size(); i++) {
-//         uint64_t temp = (num.data.at(i) * digit) + carry;
-//         answer.data.at(i) = temp & uint64_t(pow(2, 32) - 1);
-//         carry = temp >> 32;
-//     }
-//     // mb should ne size() - 1
-//     num.data.at(data.size()) = carry;
-// }
+    for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        if (i - index >= 0) {
+            data[i] = data[i - index];
+        } else {
+            data[i] = 0;
+        }
+    }
+}
 
+void LongNumber::multiplyOneDigit(const uint32_t& digit, LongNumber& res) {
+    uint32_t carry = 0;
+
+    for(int i = 0; i < data.size(); i++) {
+        uint64_t temp = static_cast<uint64_t>(data.at(i)) * static_cast<uint64_t>(digit) + carry;
+        res.data.at(i) = static_cast<uint32_t>(temp & 0xFFFFFFFF);
+        carry = static_cast<uint32_t>(temp >> 32);
+    }
+
+    res.data.at(ARRAY_SIZE - 1) = carry;
+}
+
+LongNumber LongNumber::operator * (const LongNumber& other) {
+    LongNumber res;
+
+    for (int i = 0; i < data.size(); i++) {
+        LongNumber temp;
+        multiplyOneDigit(other.data.at(i), temp);
+        temp.shiftDigitsToHigh(i); 
+        res = res + temp; 
+    }
+
+    return res;
+}
+
+// should be smth that makes sense, because we have toBinaryString and will have toDecimal & toHex
+// probably this is useless and its should bit shift operation)
+// but wotk on it later
 std::ostream& operator << (std::ostream& os, const LongNumber& ln) {
     // for(const auto& element : ln.data) {
     //     for (int i = 31; i >= 0; i--) {
@@ -84,7 +115,7 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     LongNumber difference;
 
     for(int i = 0; i < data.size(); i++) {
-        int64_t temp = static_cast<int64_t>(data.at(i)) - static_cast<int64_t>(other.data.at(i)) - borrow;
+        uint64_t temp = static_cast<uint64_t>(data.at(i)) - static_cast<uint64_t>(other.data.at(i)) - borrow;
 
         if(temp >= 0) {
             difference.data.at(i) = static_cast<uint32_t>(temp);
@@ -98,14 +129,6 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
 
     return difference;
 }
-
-// LongNumber LongNumber::operator * (const LongNumber& other) {
-//     LongNumber result;
-
-//     for(int i = 0; i < data.size(); i++) {
-//         uint64_t temp = multiplyOneDigit();
-//     }
-// }
 
 bool LongNumber::operator == (const LongNumber& other) {
     int i = data.size() - 1;
