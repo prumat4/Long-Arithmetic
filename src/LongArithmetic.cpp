@@ -4,6 +4,15 @@ LongNumber::LongNumber() {
     data.fill(0);
 }
 
+LongNumber::LongNumber(uint32_t someInt) {
+    data.fill(0);
+    data.at(0) = someInt;
+}
+
+LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
+
+LongNumber::LongNumber(const LongNumber& other) : data(other.data) {}
+
 std::string LongNumber::removeLeadingZeros(std::string& binaryString) const {
     size_t startPos = binaryString.find_first_not_of('0');
     if (startPos != std::string::npos) 
@@ -30,9 +39,9 @@ std::string LongNumber::toBinaryString() const {
     return binaryString;
 }
 
-LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
-
-LongNumber::LongNumber(const LongNumber& other) : data(other.data) {}
+uint16_t LongNumber::bitLength() const {
+    return toBinaryString().size();
+}
 
 void LongNumber::shiftDigitsToHigh(const uint16_t index) {
     if (index >= ARRAY_SIZE) {
@@ -91,7 +100,7 @@ std::ostream& operator << (std::ostream& os, const LongNumber& ln) {
     return os;
 }
 
-LongNumber& LongNumber::operator = (const LongNumber &other){
+LongNumber& LongNumber::operator = (const LongNumber& other){
     data = other.data;
 
     return *this;
@@ -130,6 +139,40 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     return difference;
 }
 
+LongNumber LongNumber::operator / (const LongNumber& other) {
+    // B
+    LongNumber divisor = other;
+    // k = nitLenght(B)
+    uint16_t divisorBitLength = divisor.bitLength();
+
+    // R = A
+    LongNumber residue = *this;
+    // Q = 0;
+    LongNumber fraction;
+
+    // R >= B
+    while(residue >= divisor) {
+        LongNumber temp;
+        uint16_t residueBitLength = residue.bitLength();
+        divisor.shiftDigitsToHigh(residueBitLength - divisorBitLength);
+        temp = divisor;
+
+        if(residue < temp) {
+            residueBitLength--;
+            divisor.shiftDigitsToHigh(residueBitLength - divisorBitLength);
+            temp = divisor;
+        }
+
+        residue = residue - temp;
+        LongNumber two(2UL);
+        uint32_t pow = residueBitLength - divisorBitLength;
+        LongNumber power(pow);
+        fraction = fraction + two.toPowerOf(power);
+    }
+
+    return fraction;
+}
+
 bool LongNumber::operator == (const LongNumber& other) {
     int i = data.size() - 1;
     
@@ -156,6 +199,14 @@ bool LongNumber::operator < (const LongNumber& other) {
     return !(*this > other);
 }
 
+bool LongNumber::operator <= (const LongNumber &other) {
+    return (*this < other) || (*this == other);
+}
+
+bool LongNumber::operator >= (const LongNumber &other) {
+    return (*this > other) || (*this == other);
+}
+
 LongNumber LongNumber::toSquare() {
     return (*this) * (*this);
 }
@@ -164,7 +215,7 @@ LongNumber LongNumber::toPowerOf(const LongNumber& power) {
     std::string binaryRepresentation = power.toBinaryString();
     LongNumber res;
 
-    for(int i = 0; i <= binaryRepresentation.length(); i++) {
+    for(int i = 0; i <= binaryRepresentation.size(); i++) {
         if(binaryRepresentation.at(i) == '1')
             res = res * (*this);
         

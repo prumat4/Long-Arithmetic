@@ -77,13 +77,10 @@ int main() {
 
     LongNumber ln6(a3);
     LongNumber ln7(a3);
-    LongNumber ln8 = ln7 * ln6;
+    LongNumber ln8 = ln7 / ln6;
     std::cout << ln6.toBinaryString() << std::endl << std::endl;
     std::cout << ln7.toBinaryString() << std::endl << std::endl;
     std::cout << ln8.toBinaryString() << std::endl << std::endl;
-    
-    LongNumber ln9 = ln7.toSquare();
-    std::cout << ln9.toBinaryString() << std::endl << std::endl;
 
     return 0;
 }

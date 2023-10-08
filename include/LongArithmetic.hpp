@@ -17,12 +17,11 @@ private:
     std::string removeLeadingZeros(std::string& binaryString) const;
     void shiftDigitsToHigh(const uint16_t index);
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
-
+    uint16_t bitLength() const;
 public:
-    friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
     
     LongNumber();
-    // LongNumber(int some_int);
+    LongNumber(uint32_t someInt);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
     LongNumber(const LongNumber& other);
 
@@ -30,15 +29,19 @@ public:
     LongNumber operator + (const LongNumber& other);
     LongNumber operator * (const LongNumber& other);
     LongNumber operator - (const LongNumber& other);
+    LongNumber operator / (const LongNumber& other);
 
     bool operator == (const LongNumber& other);
     bool operator != (const LongNumber& other);
     bool operator > (const LongNumber& other);
+    bool operator >= (const LongNumber& other);
     bool operator < (const LongNumber& other);
+    bool operator <= (const LongNumber& other);
 
     LongNumber toSquare();
     LongNumber toPowerOf(const LongNumber& power);
 
     std::string toBinaryString() const;
 
+    friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
 };
