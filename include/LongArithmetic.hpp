@@ -37,7 +37,7 @@ public:
     bool operator < (const LongNumber& other);
 
     LongNumber toSquare();
-
+    LongNumber toPowerOf(const LongNumber& power);
 
     std::string toBinaryString() const;
 

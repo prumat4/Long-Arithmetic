@@ -159,3 +159,17 @@ bool LongNumber::operator < (const LongNumber& other) {
 LongNumber LongNumber::toSquare() {
     return (*this) * (*this);
 }
+
+LongNumber LongNumber::toPowerOf(const LongNumber& power) {
+    std::string binaryRepresentation = power.toBinaryString();
+    LongNumber res;
+
+    for(int i = 0; i <= binaryRepresentation.length(); i++) {
+        if(binaryRepresentation.at(i) == '1')
+            res = res * (*this);
+        
+        toSquare();
+    }
+
+    return res;
+}
