@@ -24,7 +24,7 @@ public:
     LongNumber(uint64_t someInt);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
     LongNumber(const LongNumber& other);
-
+    
     LongNumber& operator = (const LongNumber& other);
     LongNumber operator + (const LongNumber& other);
     LongNumber operator * (const LongNumber& other);
