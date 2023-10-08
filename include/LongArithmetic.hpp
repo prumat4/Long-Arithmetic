@@ -21,7 +21,7 @@ private:
 public:
     
     LongNumber();
-    LongNumber(uint32_t someInt);
+    LongNumber(uint64_t someInt);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
     LongNumber(const LongNumber& other);
 
@@ -42,6 +42,7 @@ public:
     LongNumber toPowerOf(const LongNumber& power);
 
     std::string toBinaryString() const;
-
+    std::string toHexString() const;
+    
     friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
 };

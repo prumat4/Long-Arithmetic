@@ -75,12 +75,16 @@ int main() {
     // std::cout << ln5.toBinaryString() << std::endl << std::endl;
 
 
-    LongNumber ln6(a3);
-    LongNumber ln7(a3);
-    LongNumber ln8 = ln7 / ln6;
-    std::cout << ln6.toBinaryString() << std::endl << std::endl;
-    std::cout << ln7.toBinaryString() << std::endl << std::endl;
-    std::cout << ln8.toBinaryString() << std::endl << std::endl;
+    // LongNumber ln6(a3);
+    // LongNumber ln7(a3);
+    // LongNumber ln8 = ln7 / ln6;
+    // std::cout << ln6.toBinaryString() << std::endl << std::endl;
+    // std::cout << ln7.toBinaryString() << std::endl << std::endl;
+    // std::cout << ln8.toBinaryString() << std::endl << std::endl;
+
+    LongNumber ln1(1844674407370551615);
+    std::cout << ln1.toBinaryString() << std::endl;
+    std::cout << ln1.toHexString() << std::endl;
 
     return 0;
 }

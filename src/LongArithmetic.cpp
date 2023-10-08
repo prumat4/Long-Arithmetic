@@ -4,9 +4,13 @@ LongNumber::LongNumber() {
     data.fill(0);
 }
 
-LongNumber::LongNumber(uint32_t someInt) {
+LongNumber::LongNumber(uint64_t someInt) {
     data.fill(0);
-    data.at(0) = someInt;
+
+    data.at(0) = static_cast<uint32_t>(someInt & 0xFFFFFFFF);
+
+    if (someInt > 0xFFFFFFFF)
+        data.at(1) = static_cast<uint32_t>((someInt >> 32) & 0xFFFFFFFF);
 }
 
 LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
@@ -37,6 +41,28 @@ std::string LongNumber::toBinaryString() const {
     removeLeadingZeros(binaryString);
 
     return binaryString;
+}
+
+std::string LongNumber::toHexString() const {
+    std::string hexString;
+    hexString.reserve(8 * ARRAY_SIZE);
+
+    for (int i = data.size() - 1; i >= 0; i--) {
+        uint32_t value = data[i];
+
+        for (int j = 7; j >= 0; j--) {
+            char hexDigit = static_cast<char>((value >> (j * 4)) & 0xF);
+            if (hexDigit < 10) {
+                hexString += '0' + hexDigit;
+            } else {
+                hexString += 'A' + (hexDigit - 10);
+            }
+        }
+    }
+
+    removeLeadingZeros(hexString);
+
+    return hexString;
 }
 
 uint16_t LongNumber::bitLength() const {
