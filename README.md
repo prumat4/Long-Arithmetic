@@ -6,7 +6,7 @@ Follow these steps to build and run LongArithmeticLib, including tests and examp
 
 1. Clone the LongArithmeticLib repository to your local machine:
 ```bash
-git clone <https://github.com/prumat4/Long-Arithmetic.git>
+git clone https://github.com/prumat4/Long-Arithmetic.git
 ```
 
 2. Navigate to the project directory:
@@ -30,14 +30,14 @@ cmake ..
 cmake --build .
 ```
    
-Run Tests
+### Run Tests
 
 1. After building the library, you can run the tests using the following command:
 ```bash
 ./test/LongArithmeticLibTests
 ```
    
-Run Example Program
+### Run Example Program
 
 1. Once the library is built, you can run the example program by executing:
 ```bash
@@ -45,7 +45,7 @@ Run Example Program
 ```
    This program demonstrates the usage of LongArithmeticLib for long arithmetic operations.
 
-Usage
+### Usage
 
 To use LongArithmeticLib in your own project, follow these steps:
 
