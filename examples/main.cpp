@@ -82,5 +82,8 @@ int main() {
     std::cout << ln7.toBinaryString() << std::endl << std::endl;
     std::cout << ln8.toBinaryString() << std::endl << std::endl;
     
+    LongNumber ln9 = ln7.toSquare();
+    std::cout << ln9.toBinaryString() << std::endl << std::endl;
+
     return 0;
 }

@@ -36,8 +36,9 @@ public:
     bool operator > (const LongNumber& other);
     bool operator < (const LongNumber& other);
 
+    LongNumber toSquare();
 
-    // convertors 
+
     std::string toBinaryString() const;
 
 };

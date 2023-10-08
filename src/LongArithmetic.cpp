@@ -156,3 +156,6 @@ bool LongNumber::operator < (const LongNumber& other) {
     return !(*this > other);
 }
 
+LongNumber LongNumber::toSquare() {
+    return (*this) * (*this);
+}
