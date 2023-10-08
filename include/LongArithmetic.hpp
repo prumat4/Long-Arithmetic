@@ -43,6 +43,8 @@ public:
 
     std::string toBinaryString() const;
     std::string toHexString() const;
-    
+
+    int firstSignificantBit() const;
+
     friend std::ostream& operator << (std::ostream& os, const LongNumber& ln);
 };

@@ -65,6 +65,17 @@ std::string LongNumber::toHexString() const {
     return hexString;
 }
 
+int LongNumber::firstSignificantBit() const {
+    auto binaryString = this->toBinaryString();
+
+    int index = binaryString.rfind("1");
+
+    if(index != binaryString.size())
+        return index;
+    
+    return -1;
+}
+
 uint16_t LongNumber::bitLength() const {
     return toBinaryString().size();
 }
