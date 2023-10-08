@@ -21,7 +21,29 @@ int main() {
         33, 34, 35, 36, 37, 38, 39, 40,
         41, 42, 43, 44, 45, 46, 47, 48,
         49, 50, 51, 52, 53, 54, 55, 56,
-        57, 58, 59, 60, 61, 62, 63, 64
+        57, 58, 59, 60, 61, 62, 4294967295, 64
+    };
+// 4294967295
+    std::array<uint32_t, ARRAY_SIZE> a3 = {
+        1, 2, 3, 4, 5, 6, 7, 8,
+        9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21, 22, 23, 24,
+        25, 26, 27, 28, 29, 30, 31, 32,
+        0, 0, 0, 0, 0, 0, 0, 0,  
+        0, 0, 0, 0, 0, 0, 0, 0,  
+        0, 0, 0, 0, 0, 0, 0, 0,  
+        0, 0, 0, 0, 0, 0, 0, 0,  
+    };
+    
+    std::array<uint32_t, ARRAY_SIZE> a4 = {
+        1, 2, 3, 4, 5, 6, 7, 8,
+        9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21, 22, 23, 24,
+        25, 26, 27, 28, 29, 30, 31, 32,
+        0, 0, 0, 0, 0, 0, 0, 0,  
+        0, 0, 0, 0, 0, 0, 0, 0,  
+        0, 0, 0, 0, 0, 0, 0, 0,  
+        0, 0, 0, 0, 0, 0, 0, 0,  
     };
 
     std::array<uint32_t, 64> a2 = {
@@ -35,10 +57,40 @@ int main() {
         7065090, 38941350, 16108098, 25307346, 32942741, 5293154, 29192264, 17093795
     };
     
-    LongNumber ln0(a0);
-    LongNumber ln1(a1);
-    LongNumber ln2(a2);
+    // LongNumber ln0(a0);
+    // std::cout << ln0.toBinaryString() << std::endl << std::endl;
 
-    ln0 + ln1;
+    // LongNumber ln1(a2);
+    // std::cout << ln1.toBinaryString() << std::endl << std::endl;
+    
+    // std::cout << "ln0\n" << ln0 << std::endl;
+    // std::cout << "ln1\n" << ln1 << std::endl;
+    
+    // LongNumber ln3 = ln0 + ln1;
+    // LongNumber ln4 = ln1 - ln0;
+    // LongNumber ln5 = ln1 * ln0;
+    // std::cout << "ln3\n" << ln3 << std::endl;
+    // std::cout << ln3.toBinaryString() << std::endl << std::endl;
+    // std::cout << ln4.toBinaryString() << std::endl << std::endl;
+    // std::cout << ln5.toBinaryString() << std::endl << std::endl;
+
+
+    // LongNumber ln6(a3);
+    // LongNumber ln7(a3);
+    // LongNumber ln8 = ln7 / ln6;
+    // std::cout << ln6.toBinaryString() << std::endl << std::endl;
+    // std::cout << ln7.toBinaryString() << std::endl << std::endl;
+    // std::cout << ln8.toBinaryString() << std::endl << std::endl;
+
+    LongNumber ln1(1844674407370551615);
+    std::cout << ln1.toBinaryString() << std::endl;
+    ln1 = ln1 << 2;
+    std::cout << ln1.toBinaryString() << std::endl;
+
+    LongNumber ln0(1844674407370551615);
+    std::cout << ln0.toBinaryString() << std::endl;
+    ln0 = ln0 >> 2;
+    std::cout << ln0.toBinaryString() << std::endl;
+
     return 0;
 }
