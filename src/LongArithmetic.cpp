@@ -17,6 +17,41 @@ LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
 
 LongNumber::LongNumber(const LongNumber& other) : data(other.data) {}
 
+LongNumber::LongNumber(const std::string& num) {
+    data.fill(0);  // Initialize data to all zeros
+    // Ensure that the input string contains only '0' and '1' characters
+    if (num.find_first_not_of("01") != std::string::npos) {
+        throw std::invalid_argument("Invalid binary string: " + num);
+    }
+
+    // Reverse the input string to convert from big-endian to little-endian
+    std::string reversedNum = num;
+    std::reverse(reversedNum.begin(), reversedNum.end());
+    int strIndex = 0;
+    int dataIndex = 0;
+    int bitIndex = 0;  // Start with the least significant bit in the first data element
+    uint32_t currentData = 0;
+    while (strIndex < reversedNum.size()) {
+        char currentChar = reversedNum[strIndex];
+        currentData <<= 1;
+        currentData |= static_cast<uint32_t>(currentChar - '0');
+        bitIndex++;
+        if (bitIndex > 31 || strIndex == reversedNum.size() - 1) {
+            // We've processed all 32 bits or reached the end of the string, store the data
+            data[dataIndex] = currentData;
+            currentData = 0;
+            bitIndex = 0;  // Reset to the least significant bit
+            dataIndex++;
+            if (dataIndex >= ARRAY_SIZE) {
+                // The data array is full; exit the loop
+                break;
+            }
+        }
+        // Move to the next character
+        strIndex++;
+    }
+}
+
 std::string LongNumber::removeLeadingZeros(std::string& binaryString) const {
     size_t startPos = binaryString.find_first_not_of('0');
     if (startPos != std::string::npos) 
@@ -76,8 +111,9 @@ int LongNumber::firstSignificantBit() const {
     return -1;
 }
 
-uint16_t LongNumber::bitLength() const {
-    return toBinaryString().size();
+int LongNumber::bitLength() const {
+    std::string ans = toBinaryString();
+    return ans.size();
 }
 
 void LongNumber::shiftDigitsToHigh(const uint16_t index) {
@@ -163,7 +199,7 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
     // B
     LongNumber divisor = other;
     // k = nitLenght(B)
-    uint16_t divisorBitLength = divisor.bitLength();
+    int divisorBitLength = divisor.bitLength();
 
     // R = A
     LongNumber residue = *this;
@@ -173,7 +209,7 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
     // R >= B
     while(residue >= divisor) {
         LongNumber temp;
-        uint16_t residueBitLength = residue.bitLength();
+        int residueBitLength = residue.bitLength();
         divisor.shiftDigitsToHigh(residueBitLength - divisorBitLength);
         temp = divisor;
 
@@ -184,6 +220,7 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
         }
 
         residue = residue - temp;
+
         LongNumber two(2UL);
         uint32_t pow = residueBitLength - divisorBitLength;
         LongNumber power(pow);

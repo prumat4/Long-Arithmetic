@@ -17,13 +17,14 @@ private:
     std::string removeLeadingZeros(std::string& binaryString) const;
     void shiftDigitsToHigh(const uint16_t index);
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
-    uint16_t bitLength() const;
+    int bitLength() const;
     
 public:
     LongNumber();
     LongNumber(uint64_t someInt);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
-    LongNumber(const LongNumber& other);
+    LongNumber(const LongNumber &other);
+    LongNumber(const std::string &num);
     
     LongNumber& operator = (const LongNumber& other);
     LongNumber operator + (const LongNumber& other);
