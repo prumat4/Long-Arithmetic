@@ -31,6 +31,7 @@ public:
     LongNumber operator * (const LongNumber& other);
     LongNumber operator - (const LongNumber& other);
     LongNumber operator / (const LongNumber& other);
+    LongNumber operator % (const LongNumber& other);
 
     LongNumber operator << (const int shiftCount);
     LongNumber operator >> (const int shiftCount);

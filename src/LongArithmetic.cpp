@@ -28,10 +28,8 @@ LongNumber::LongNumber(const std::string& hexString) {
         char c = hexString[i];
         uint32_t nibble = hexCharToDecimal(c);
 
-        // Combine the nibble into the appropriate uint32_t value within the data array
         data[dataIndex] |= (nibble << shift);
 
-        // Move to the next uint32_t value when necessary
         if (shift == 28) {
             dataIndex++;
             shift = 0;
@@ -195,46 +193,37 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     return difference;
 }
 
-std::string getStr(int n) {
-    std::string num = "1";
-
-    for(int i = 0; i < n; i++)
-        num += "0";
-
-    return num;
-}
-
 LongNumber LongNumber::operator / (const LongNumber& other) {
+    LongNumber quotient;
+    LongNumber remainder = (*this);
     LongNumber divisor = other;
-    int divisorBitLength = divisor.bitLength();
+    LongNumber one(1);
 
-    LongNumber residue = *this;
-    LongNumber fraction;
+    while (remainder >= divisor) {
+        LongNumber tempDivisor = divisor;
+        LongNumber tempQuotient(1);
 
-    while(residue >= divisor) {
-        LongNumber temp;
-        int residueBitLength = residue.bitLength();
-        divisor.shiftDigitsToHigh(residueBitLength - divisorBitLength);
-        temp = divisor;
-
-        if(residue < temp) {
-            residueBitLength--;
-            divisor.shiftDigitsToHigh(residueBitLength - divisorBitLength);
-            temp = divisor;
+        while (remainder >= (tempDivisor << 1)) {
+            tempDivisor = tempDivisor << 1;
+            tempQuotient = tempQuotient << 1;
         }
 
-        residue = residue - temp;
-        
-        LongNumber power(getStr(residueBitLength - divisorBitLength));
-        fraction = fraction + power;
+        remainder = remainder - tempDivisor;
+        quotient = quotient + tempQuotient;
     }
 
-    return fraction;
+    return quotient;
+}
+
+LongNumber LongNumber::operator % (const LongNumber& other) {
+    LongNumber quotient = (*this) / other;
+    LongNumber remainder = (*this) - (quotient * other);
+    return remainder;
 }
 
 bool LongNumber::operator == (const LongNumber& other) const {
     for (int i = data.size() - 1; i >= 0; i--) {
-        if (data[i] != other.data[i])
+        if (data.at(i) != other.data.at(i))
             return false;
     }
     return true;
@@ -245,23 +234,19 @@ bool LongNumber::operator != (const LongNumber& other) const {
 }
 
 bool LongNumber::operator > (const LongNumber& other) const {
-    for (int i = data.size() - 1; i >= 0; i--) {
-        if (data[i] > other.data[i])
-            return true;
-        else if (data[i] < other.data[i])
-            return false;
-    }
-    return false;
+    int i = data.size() - 1;
+    while(data.at(i == other.data.at(i)))
+        i--;
+    
+    return data.at(i) > other.data.at(i);
 }
 
 bool LongNumber::operator < (const LongNumber& other) const {
-    for (int i = data.size() - 1; i >= 0; i--) {
-        if (data[i] < other.data[i])
-            return true;
-        else if (data[i] > other.data[i])
-            return false;
-    }
-    return false;
+    int i = data.size() - 1;
+    while(data.at(i) == other.data.at(i))
+        i--;
+    
+    return data.at(i) < other.data.at(i);
 }
 
 bool LongNumber::operator <= (const LongNumber &other) const {
@@ -278,8 +263,8 @@ LongNumber LongNumber::operator >> (const int shiftCount) {
     for (int i = 0; i < shiftCount; i++) {
         uint32_t carry = 0;
         for (int j = 0; j < ARRAY_SIZE; j++) {
-            uint32_t temp = result.data[j];
-            result.data[j] = (temp >> 1) | (carry << 31);
+            uint32_t temp = result.data.at(j);
+            result.data.at(j) = (temp >> 1) | (carry << 31);
         }
     }
     
@@ -292,8 +277,8 @@ LongNumber LongNumber::operator << (const int shiftCount) {
     for (int i = 0; i < shiftCount; i++) {
         uint32_t carry = 0;
         for (int j = ARRAY_SIZE - 1; j >= 0; j--) {
-            uint32_t temp = result.data[j];
-            result.data[j] = (temp << 1) | carry;
+            uint32_t temp = result.data.at(j);
+            result.data.at(j) = (temp << 1) | carry;
             carry = (temp >> 31) & 1;
         }
     }
@@ -307,13 +292,14 @@ LongNumber LongNumber::toSquare() {
 
 LongNumber LongNumber::toPowerOf(const LongNumber& power) {
     std::string binaryRepresentation = power.toBinaryString();
-    LongNumber res;
+    LongNumber res(1);
 
-    for(int i = 0; i <= binaryRepresentation.size(); i++) {
-        if(binaryRepresentation.at(i) == '1')
+    for (int i = binaryRepresentation.size() - 1; i >= 0; i--) {
+        if (binaryRepresentation.at(i) == '1')
             res = res * (*this);
-        
-        toSquare();
+
+        if (i > 0)
+            *this = this->toSquare();
     }
 
     return res;
