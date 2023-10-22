@@ -17,39 +17,39 @@ LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
 
 LongNumber::LongNumber(const LongNumber& other) : data(other.data) {}
 
-LongNumber::LongNumber(const std::string& num) {
-    data.fill(0);  // Initialize data to all zeros
-    // Ensure that the input string contains only '0' and '1' characters
-    if (num.find_first_not_of("01") != std::string::npos) {
-        throw std::invalid_argument("Invalid binary string: " + num);
-    }
+LongNumber::LongNumber(const std::string& hexString) {
+    data.fill(0);
 
-    // Reverse the input string to convert from big-endian to little-endian
-    std::string reversedNum = num;
-    std::reverse(reversedNum.begin(), reversedNum.end());
-    int strIndex = 0;
+    int len = hexString.length();
     int dataIndex = 0;
-    int bitIndex = 0;  // Start with the least significant bit in the first data element
-    uint32_t currentData = 0;
-    while (strIndex < reversedNum.size()) {
-        char currentChar = reversedNum[strIndex];
-        currentData <<= 1;
-        currentData |= static_cast<uint32_t>(currentChar - '0');
-        bitIndex++;
-        if (bitIndex > 31 || strIndex == reversedNum.size() - 1) {
-            // We've processed all 32 bits or reached the end of the string, store the data
-            data[dataIndex] = currentData;
-            currentData = 0;
-            bitIndex = 0;  // Reset to the least significant bit
+    int shift = 0;
+
+    for (int i = len - 1; i >= 0; i--) {
+        char c = hexString[i];
+        uint32_t nibble = hexCharToDecimal(c);
+
+        // Combine the nibble into the appropriate uint32_t value within the data array
+        data[dataIndex] |= (nibble << shift);
+
+        // Move to the next uint32_t value when necessary
+        if (shift == 28) {
             dataIndex++;
-            if (dataIndex >= ARRAY_SIZE) {
-                // The data array is full; exit the loop
-                break;
-            }
+            shift = 0;
+        } else {
+            shift += 4;
         }
-        // Move to the next character
-        strIndex++;
     }
+}
+
+uint32_t LongNumber::hexCharToDecimal(char c) {
+    if (c >= '0' && c <= '9')
+        return static_cast<uint32_t>(c - '0');
+    else if (c >= 'a' && c <= 'f')
+        return static_cast<uint32_t>(c - 'a' + 10);
+    else if (c >= 'A' && c <= 'F') 
+        return static_cast<uint32_t>(c - 'A' + 10);
+    
+    return 0;
 }
 
 std::string LongNumber::removeLeadingZeros(std::string& binaryString) const {
@@ -195,18 +195,22 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     return difference;
 }
 
+std::string getStr(int n) {
+    std::string num = "1";
+
+    for(int i = 0; i < n; i++)
+        num += "0";
+
+    return num;
+}
+
 LongNumber LongNumber::operator / (const LongNumber& other) {
-    // B
     LongNumber divisor = other;
-    // k = nitLenght(B)
     int divisorBitLength = divisor.bitLength();
 
-    // R = A
     LongNumber residue = *this;
-    // Q = 0;
     LongNumber fraction;
 
-    // R >= B
     while(residue >= divisor) {
         LongNumber temp;
         int residueBitLength = residue.bitLength();
@@ -220,47 +224,51 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
         }
 
         residue = residue - temp;
-
-        LongNumber two(2UL);
-        uint32_t pow = residueBitLength - divisorBitLength;
-        LongNumber power(pow);
-        fraction = fraction + two.toPowerOf(power);
+        
+        LongNumber power(getStr(residueBitLength - divisorBitLength));
+        fraction = fraction + power;
     }
 
     return fraction;
 }
 
-bool LongNumber::operator == (const LongNumber& other) {
-    int i = data.size() - 1;
-    
-    while(data.at(i) == other.data.at(i))
-        i--;
-
-    return i == -1;
+bool LongNumber::operator == (const LongNumber& other) const {
+    for (int i = data.size() - 1; i >= 0; i--) {
+        if (data[i] != other.data[i])
+            return false;
+    }
+    return true;
 }
 
-bool LongNumber::operator != (const LongNumber& other) {
+bool LongNumber::operator != (const LongNumber& other) const {
     return !(*this == other);
 }
 
-bool LongNumber::operator > (const LongNumber& other) {
-    int i = data.size() - 1;
-    
-    while(data.at(i) == other.data.at(i))
-        i--;
-
-    return data.at(i) > other.data.at(i);
+bool LongNumber::operator > (const LongNumber& other) const {
+    for (int i = data.size() - 1; i >= 0; i--) {
+        if (data[i] > other.data[i])
+            return true;
+        else if (data[i] < other.data[i])
+            return false;
+    }
+    return false;
 }
 
-bool LongNumber::operator < (const LongNumber& other) {
-    return !(*this > other);
+bool LongNumber::operator < (const LongNumber& other) const {
+    for (int i = data.size() - 1; i >= 0; i--) {
+        if (data[i] < other.data[i])
+            return true;
+        else if (data[i] > other.data[i])
+            return false;
+    }
+    return false;
 }
 
-bool LongNumber::operator <= (const LongNumber &other) {
+bool LongNumber::operator <= (const LongNumber &other) const {
     return (*this < other) || (*this == other);
 }
 
-bool LongNumber::operator >= (const LongNumber &other) {
+bool LongNumber::operator >= (const LongNumber &other) const {
     return (*this > other) || (*this == other);
 }
 

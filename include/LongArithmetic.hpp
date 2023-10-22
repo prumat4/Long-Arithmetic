@@ -18,14 +18,14 @@ private:
     void shiftDigitsToHigh(const uint16_t index);
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
     int bitLength() const;
-    
+    uint32_t hexCharToDecimal(char c);
 public:
     LongNumber();
     LongNumber(uint64_t someInt);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
-    LongNumber(const LongNumber &other);
-    LongNumber(const std::string &num);
-    
+    LongNumber(const LongNumber& other);
+    LongNumber(const std::string& hexString);
+
     LongNumber& operator = (const LongNumber& other);
     LongNumber operator + (const LongNumber& other);
     LongNumber operator * (const LongNumber& other);
@@ -35,18 +35,17 @@ public:
     LongNumber operator << (const int shiftCount);
     LongNumber operator >> (const int shiftCount);
 
-    bool operator == (const LongNumber& other);
-    bool operator != (const LongNumber& other);
-    bool operator > (const LongNumber& other);
-    bool operator >= (const LongNumber& other);
-    bool operator < (const LongNumber& other);
-    bool operator <= (const LongNumber& other);
+    bool operator == (const LongNumber& other) const;
+    bool operator != (const LongNumber& other) const;
+    bool operator > (const LongNumber& other) const;
+    bool operator >= (const LongNumber& other) const;
+    bool operator < (const LongNumber& other) const;
+    bool operator <= (const LongNumber& other) const;
 
     LongNumber toSquare();
     LongNumber toPowerOf(const LongNumber& power);
 
     std::string toBinaryString() const;
     std::string toHexString() const;
-
     int firstSignificantBit() const;
 };
