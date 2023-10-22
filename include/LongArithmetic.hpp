@@ -4,6 +4,7 @@
 #include <array>
 #include <algorithm>
 #include <math.h>
+#include <bitset>
 
 #define ARRAY_SIZE 64
 // num lenght is fixed 2048 bits
@@ -15,10 +16,12 @@ private:
 
 private:
     std::string removeLeadingZeros(std::string& binaryString) const;
-    void shiftDigitsToHigh(const uint16_t index);
+    void shiftDigitsToHigh(const int index);
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
     int bitLength() const;
     uint32_t hexCharToDecimal(char c);
+
+
 public:
     LongNumber();
     LongNumber(uint64_t someInt);
@@ -32,10 +35,8 @@ public:
     LongNumber operator - (const LongNumber& other);
     LongNumber operator / (const LongNumber& other);
     LongNumber operator % (const LongNumber& other);
-
-    LongNumber operator << (const int shiftCount);
-    LongNumber operator >> (const int shiftCount);
-
+    LongNumber operator << (int shiftCount) const;
+    
     bool operator == (const LongNumber& other) const;
     bool operator != (const LongNumber& other) const;
     bool operator > (const LongNumber& other) const;
@@ -47,6 +48,7 @@ public:
     LongNumber toPowerOf(const LongNumber& power);
 
     std::string toBinaryString() const;
+    void fromBinaryString(const std::string& binaryString);
     std::string toHexString() const;
     int firstSignificantBit() const;
 };
