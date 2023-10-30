@@ -164,7 +164,7 @@ void LongNumber::multiplyOneDigit(const uint32_t& digit, LongNumber& res) {
     res.data.at(ARRAY_SIZE - 1) = carry;
 }
 
-LongNumber LongNumber::operator << (int numBits) {
+LongNumber LongNumber::operator << (int numBits) const {
     if (numBits <= 0) 
         return *this;
 
@@ -192,7 +192,7 @@ LongNumber LongNumber::operator << (int numBits) {
     return result;
 }
 
-LongNumber LongNumber::operator >> (int numBits) {
+LongNumber LongNumber::operator >> (int numBits) const {
     if (numBits <= 0) 
         return *this;
 
@@ -284,35 +284,34 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
     int k = other.bitLength();
     std::cout << "k = " << k << std::endl;
 
-    LongNumber B = other;
-    std::cout << "B = " << B.toHexString() << std::endl;
-
     LongNumber R = *this;
     std::cout << "R = " << R.toHexString() << std::endl;
 
     LongNumber Q(0);
     std::cout << "Q = " << Q.toHexString() << std::endl;
 
-    while (R >= B) {
+    while (R >= other) {
         int t = R.bitLength();
         std::cout << "t = " << t << std::endl;
 
-        LongNumber C = B >> (t - k);
+        LongNumber C = other >> (t - k);
         std::cout << "C = " << C.toHexString() << std::endl;
 
         if (R < C) {
             t = t - 1;
-            C = B >> (t - k);
+            C = other >> (t - k);
         }
 
         std::cout << "C (after R < C check) = " << C.toHexString() << std::endl;
-
         R = R - C;
         std::cout << "R (after R = R - C) = " << R.toHexString() << std::endl;
 
         LongNumber two(2);
         Q = Q + two.toPowerOf(t - k);
         std::cout << "Q = " << Q.toHexString() << std::endl;
+
+        if(R == other)
+            return R;
     }
 
     return R;
@@ -325,9 +324,10 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
 // }
 
 bool LongNumber::operator == (const LongNumber& other) const {
-    for (int i = data.size() - 1; i >= 0; i--) {
-        if (data.at(i) != other.data.at(i))
+    for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        if (data.at(i) != other.data.at(i)) {
             return false;
+        }
     }
     return true;
 }
@@ -337,19 +337,17 @@ bool LongNumber::operator != (const LongNumber& other) const {
 }
 
 bool LongNumber::operator > (const LongNumber& other) const {
-    int i = data.size() - 1;
-    while(data.at(i) == other.data.at(i))
-        i--;
+    for(int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        if(data.at(i) > other.data.at(i)) 
+            return true;
+    }
 
-    if(i < 0)
-        return false;
-
-    return data.at(i) > other.data.at(i);
+    return false;
 }
 
 bool LongNumber::operator < (const LongNumber& other) const {
     int i = data.size() - 1;
-    while(data.at(i) == other.data.at(i))
+    while(data.at(i) == other.data.at(i)) 
         i--;
 
     if(i < 0)
@@ -359,7 +357,7 @@ bool LongNumber::operator < (const LongNumber& other) const {
 }
 
 bool LongNumber::operator <= (const LongNumber &other) const {
-    return (*this < other) || (*this == other);
+    return (*this == other) || (*this < other);
 }
 
 bool LongNumber::operator >= (const LongNumber &other) const {

@@ -35,8 +35,8 @@ public:
     LongNumber operator - (const LongNumber& other);
     LongNumber operator / (const LongNumber& other);
     LongNumber operator % (const LongNumber& other);
-    LongNumber operator << (int numBits); 
-    LongNumber operator >> (int numBits);
+    LongNumber operator << (int numBits) const; 
+    LongNumber operator >> (int numBits) const;
     
     bool operator == (const LongNumber& other) const;
     bool operator != (const LongNumber& other) const;
