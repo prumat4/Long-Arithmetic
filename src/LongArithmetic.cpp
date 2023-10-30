@@ -4,13 +4,9 @@ LongNumber::LongNumber() {
     data.fill(0);
 }
 
-LongNumber::LongNumber(uint64_t someInt) {
+LongNumber::LongNumber(uint32_t someInt) {
     data.fill(0);
-
-    data.at(0) = static_cast<uint32_t>(someInt & 0xFFFFFFFF);
-
-    if (someInt > 0xFFFFFFFF)
-        data.at(1) = static_cast<uint32_t>((someInt >> 32) & 0xFFFFFFFF);
+    data.at(0) = someInt;
 }
 
 LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
@@ -138,7 +134,7 @@ int LongNumber::firstSignificantBit() const {
 }
 
 int LongNumber::bitLength() const {
-    std::string ans = toBinaryString();
+    std::string ans = this->toBinaryString();
     return ans.size();
 }
 
@@ -166,6 +162,62 @@ void LongNumber::multiplyOneDigit(const uint32_t& digit, LongNumber& res) {
     }
 
     res.data.at(ARRAY_SIZE - 1) = carry;
+}
+
+LongNumber LongNumber::operator << (int numBits) {
+    if (numBits <= 0) 
+        return *this;
+
+    LongNumber result(*this);
+
+    int shiftWords = numBits / 32;
+    int shiftBits = numBits % 32;
+
+    for (int i = 0; i < ARRAY_SIZE; i++) {
+        if (i + shiftWords < ARRAY_SIZE) 
+            result.data.at(i) = data.at(i + shiftWords);
+        else 
+            result.data.at(i) = 0;
+    }
+
+    if (shiftBits > 0) {
+        uint32_t carry = 0;
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            uint32_t temp = result.data.at(i) << shiftBits;
+            result.data.at(i) = (temp | carry) & 0xFFFFFFFF;
+            carry = temp >> 32;
+        }
+    }
+
+    return result;
+}
+
+LongNumber LongNumber::operator >> (int numBits) {
+    if (numBits <= 0) 
+        return *this;
+
+    LongNumber result(*this);
+
+    int shiftWords = numBits / 32;
+    int shiftBits = numBits % 32;
+
+    for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        if (i - shiftWords >= 0) 
+            result.data.at(i) = data.at(i - shiftWords);
+        else 
+            result.data.at(i) = 0;
+    }
+
+    if (shiftBits > 0) {
+        uint32_t carry = 0;
+        for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
+            uint32_t temp = result.data.at(i) >> shiftBits;
+            result.data.at(i) = (temp | carry) & 0xFFFFFFFF;
+            carry = (data.at(i) << (32 - shiftBits)) & 0xFFFFFFFF;
+        }
+    }
+
+    return result;
 }
 
 LongNumber LongNumber::operator * (const LongNumber& other) {
@@ -220,6 +272,52 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     return difference;
 }
 
+LongNumber LongNumber::operator / (const LongNumber& other) {
+    std::cout << "Entering operator /" << std::endl;
+
+    if (other == LongNumber()) 
+        return LongNumber(0);
+
+    if(*this == other)
+        return LongNumber(1);
+
+    int k = other.bitLength();
+    std::cout << "k = " << k << std::endl;
+
+    LongNumber B = other;
+    std::cout << "B = " << B.toHexString() << std::endl;
+
+    LongNumber R = *this;
+    std::cout << "R = " << R.toHexString() << std::endl;
+
+    LongNumber Q(0);
+    std::cout << "Q = " << Q.toHexString() << std::endl;
+
+    while (R >= B) {
+        int t = R.bitLength();
+        std::cout << "t = " << t << std::endl;
+
+        LongNumber C = B >> (t - k);
+        std::cout << "C = " << C.toHexString() << std::endl;
+
+        if (R < C) {
+            t = t - 1;
+            C = B >> (t - k);
+        }
+
+        std::cout << "C (after R < C check) = " << C.toHexString() << std::endl;
+
+        R = R - C;
+        std::cout << "R (after R = R - C) = " << R.toHexString() << std::endl;
+
+        LongNumber two(2);
+        Q = Q + two.toPowerOf(t - k);
+        std::cout << "Q = " << Q.toHexString() << std::endl;
+    }
+
+    return R;
+}
+
 // LongNumber LongNumber::operator % (const LongNumber& other) {
 //     LongNumber quotient = (*this) / other;
 //     LongNumber remainder = (*this) - (quotient * other);
@@ -240,9 +338,12 @@ bool LongNumber::operator != (const LongNumber& other) const {
 
 bool LongNumber::operator > (const LongNumber& other) const {
     int i = data.size() - 1;
-    while(data.at(i == other.data.at(i)))
+    while(data.at(i) == other.data.at(i))
         i--;
-    
+
+    if(i < 0)
+        return false;
+
     return data.at(i) > other.data.at(i);
 }
 
@@ -250,6 +351,9 @@ bool LongNumber::operator < (const LongNumber& other) const {
     int i = data.size() - 1;
     while(data.at(i) == other.data.at(i))
         i--;
+
+    if(i < 0)
+        return false;
     
     return data.at(i) < other.data.at(i);
 }

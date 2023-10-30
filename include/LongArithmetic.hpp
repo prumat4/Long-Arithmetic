@@ -20,11 +20,11 @@ private:
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
     int bitLength() const;
     uint32_t hexCharToDecimal(char c);
-
+    int compare(const LongNumber& ln1, const LongNumber& ln2) const;
 
 public:
     LongNumber();
-    LongNumber(uint64_t someInt);
+    LongNumber(uint32_t someInt);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
     LongNumber(const LongNumber& other);
     LongNumber(const std::string& hexString);
@@ -35,7 +35,8 @@ public:
     LongNumber operator - (const LongNumber& other);
     LongNumber operator / (const LongNumber& other);
     LongNumber operator % (const LongNumber& other);
-    LongNumber operator << (int shiftCount) const;
+    LongNumber operator << (int numBits); 
+    LongNumber operator >> (int numBits);
     
     bool operator == (const LongNumber& other) const;
     bool operator != (const LongNumber& other) const;
