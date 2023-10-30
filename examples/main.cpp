@@ -1,8 +1,8 @@
 #include "../include/LongArithmetic.hpp"
 
 int main() {
-    LongNumber num1("7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-    LongNumber num2("80000000000000000000000000000000800000000000000000000000000000008000000000000000000000000000000");
+    LongNumber num1("4");
+    LongNumber num2("2");
 
 
     std::cout << num1.toHexString() << std::endl << std::endl << std::endl;

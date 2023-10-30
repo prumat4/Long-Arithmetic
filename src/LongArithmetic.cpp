@@ -272,9 +272,39 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     return difference;
 }
 
-LongNumber LongNumber::operator / (const LongNumber& other) {
-    std::cout << "Entering operator /" << std::endl;
+LongNumber LongNumber::bitShiftToHigh(const int index) const {
+    LongNumber C;
 
+    if(index <= 0)
+        return *this;
+    
+    int numberOfWords = index / 32;
+    int shifts = index % 32;
+    uint32_t carry = 0;
+
+    if(shifts != 0) {
+        for(int i = 0; i < ARRAY_SIZE; i++) {
+            C.data.at(i) = (this->data.at(i) << shifts) + carry;
+            carry = this->data.at(i) >> 32 - shifts;
+        }
+
+        LongNumber res;
+        for(int i = numberOfWords; i < ARRAY_SIZE; i++)
+            res.data.at(i) = C.data.at(i - numberOfWords);
+        return res;
+    } else {
+        for (int i = 0; i < ARRAY_SIZE; i++)
+            C.data.at(i) = this->data.at(i);
+
+        LongNumber res;
+        for (int i = numberOfWords; i < ARRAY_SIZE; i++)
+            res.data.at(i) = C.data.at(i - numberOfWords);
+        
+        return res;
+    }
+}
+
+LongNumber LongNumber::operator / (const LongNumber& other) {
     if (other == LongNumber()) 
         return LongNumber(0);
 
@@ -282,46 +312,27 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
         return LongNumber(1);
 
     int k = other.bitLength();
-    std::cout << "k = " << k << std::endl;
-
     LongNumber R = *this;
-    std::cout << "R = " << R.toHexString() << std::endl;
-
     LongNumber Q(0);
-    std::cout << "Q = " << Q.toHexString() << std::endl;
 
     while (R >= other) {
         int t = R.bitLength();
-        std::cout << "t = " << t << std::endl;
-
-        LongNumber C = other >> (t - k);
-        std::cout << "C = " << C.toHexString() << std::endl;
-
+        LongNumber C = other.bitShiftToHigh(t - k);
         if (R < C) {
-            t = t - 1;
-            C = other >> (t - k);
+            t--;
+            C = other.bitShiftToHigh(t - k);
         }
 
-        std::cout << "C (after R < C check) = " << C.toHexString() << std::endl;
         R = R - C;
-        std::cout << "R (after R = R - C) = " << R.toHexString() << std::endl;
-
-        LongNumber two(2);
-        Q = Q + two.toPowerOf(t - k);
-        std::cout << "Q = " << Q.toHexString() << std::endl;
+        LongNumber one(1);
+        Q = Q + one.bitShiftToHigh(t - k);
 
         if(R == other)
             return R;
     }
 
-    return R;
+    return Q;
 }
-
-// LongNumber LongNumber::operator % (const LongNumber& other) {
-//     LongNumber quotient = (*this) / other;
-//     LongNumber remainder = (*this) - (quotient * other);
-//     return remainder;
-// }
 
 bool LongNumber::operator == (const LongNumber& other) const {
     for (int i = ARRAY_SIZE - 1; i >= 0; i--) {

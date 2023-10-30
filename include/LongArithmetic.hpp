@@ -20,7 +20,7 @@ private:
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
     int bitLength() const;
     uint32_t hexCharToDecimal(char c);
-    int compare(const LongNumber& ln1, const LongNumber& ln2) const;
+    LongNumber bitShiftToHigh(const int index) const;
 
 public:
     LongNumber();
