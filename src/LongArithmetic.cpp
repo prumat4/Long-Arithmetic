@@ -4,18 +4,47 @@ LongNumber::LongNumber() {
     data.fill(0);
 }
 
-LongNumber::LongNumber(uint64_t someInt) {
+LongNumber::LongNumber(uint32_t someInt) {
     data.fill(0);
-
-    data.at(0) = static_cast<uint32_t>(someInt & 0xFFFFFFFF);
-
-    if (someInt > 0xFFFFFFFF)
-        data.at(1) = static_cast<uint32_t>((someInt >> 32) & 0xFFFFFFFF);
+    data.at(0) = someInt;
 }
 
 LongNumber::LongNumber(std::array<uint32_t, ARRAY_SIZE> arr) : data(arr) {}
 
 LongNumber::LongNumber(const LongNumber& other) : data(other.data) {}
+
+LongNumber::LongNumber(const std::string& hexString) {
+    data.fill(0);
+
+    int len = hexString.length();
+    int index = 0;
+    int shift = 0;
+
+    for (int i = len - 1; i >= 0; i--) {
+        char c = hexString[i];
+        uint32_t temp = hexCharToDecimal(c);
+
+        data.at(index) |= (temp << shift);
+
+        if (shift == 28) {
+            index++;
+            shift = 0;
+        } else {
+            shift += 4;
+        }
+    }
+}
+
+uint32_t LongNumber::hexCharToDecimal(char c) {
+    if (c >= '0' && c <= '9')
+        return static_cast<uint32_t>(c - '0');
+    else if (c >= 'a' && c <= 'f')
+        return static_cast<uint32_t>(c - 'a' + 10);
+    else if (c >= 'A' && c <= 'F') 
+        return static_cast<uint32_t>(c - 'A' + 10);
+    
+    return 0;
+}
 
 std::string LongNumber::removeLeadingZeros(std::string& binaryString) const {
     size_t startPos = binaryString.find_first_not_of('0');
@@ -31,7 +60,7 @@ std::string LongNumber::toBinaryString() const {
     std::string binaryString;
     
     for (int i = data.size() - 1; i >= 0; i--) {
-        uint32_t value = data[i];
+        uint32_t value = data.at(i);
         
         for (int j = 31; j >= 0; j--) 
             binaryString += (value & (1 << j)) ? '1' : '0';
@@ -40,6 +69,34 @@ std::string LongNumber::toBinaryString() const {
     removeLeadingZeros(binaryString);
 
     return binaryString;
+}
+
+void LongNumber::fromBinaryString(const std::string& binaryString) {
+    data.fill(0);
+
+    int len = binaryString.length();
+    int index = 0;
+    uint32_t currentWord = 0;
+    int shift = 0;
+
+    for (int i = len - 1; i >= 0; i--) {
+        char c = binaryString.at(i);
+
+        if (c == '1') 
+            currentWord |= (1 << shift);
+
+        shift++;
+
+        if (shift == 32) {
+            data.at(index) = currentWord;
+            currentWord = 0;
+            shift = 0;
+            index++;
+        }
+    }
+
+    if (shift > 0)
+        data.at(index) = currentWord;
 }
 
 std::string LongNumber::toHexString() const {
@@ -76,11 +133,12 @@ int LongNumber::firstSignificantBit() const {
     return -1;
 }
 
-uint16_t LongNumber::bitLength() const {
-    return toBinaryString().size();
+int LongNumber::bitLength() const {
+    std::string ans = this->toBinaryString();
+    return ans.size();
 }
 
-void LongNumber::shiftDigitsToHigh(const uint16_t index) {
+void LongNumber::shiftDigitsToHigh(const int index) {
     if (index >= ARRAY_SIZE) {
         data.fill(0);
         return;
@@ -88,10 +146,9 @@ void LongNumber::shiftDigitsToHigh(const uint16_t index) {
 
     for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
         if (i - index >= 0) 
-            data[i] = data[i - index];
+            data.at(i) = data.at(i - index);
         else 
-            data[i] = 0;
-        
+            data.at(i) = 0;
     }
 }
 
@@ -140,6 +197,11 @@ LongNumber LongNumber::operator + (const LongNumber& other) {
 }
 
 LongNumber LongNumber::operator - (const LongNumber& other) {
+    if(other > *this) {
+        std::cerr << "Error: Bigger number is substracted from the smaller, returning smaller one...\n";
+        return *this;
+    }
+
     uint32_t borrow = 0;
     LongNumber difference;
 
@@ -159,101 +221,111 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     return difference;
 }
 
-LongNumber LongNumber::operator / (const LongNumber& other) {
-    // B
-    LongNumber divisor = other;
-    // k = nitLenght(B)
-    uint16_t divisorBitLength = divisor.bitLength();
+LongNumber LongNumber::bitShiftToHigh(const int index) const {
+    if(index <= 0 || index >= ARRAY_SIZE)
+        return *this;
+    
+    int numberOfWords = index / 32;
+    int shifts = index % 32;
+    uint32_t carry = 0;
+    LongNumber C, res;
 
-    // R = A
-    LongNumber residue = *this;
-    // Q = 0;
-    LongNumber fraction;
-
-    // R >= B
-    while(residue >= divisor) {
-        LongNumber temp;
-        uint16_t residueBitLength = residue.bitLength();
-        divisor.shiftDigitsToHigh(residueBitLength - divisorBitLength);
-        temp = divisor;
-
-        if(residue < temp) {
-            residueBitLength--;
-            divisor.shiftDigitsToHigh(residueBitLength - divisorBitLength);
-            temp = divisor;
+    if(shifts != 0) {
+        for(int i = 0; i < ARRAY_SIZE; i++) {
+            C.data.at(i) = (data.at(i) << shifts) + carry;
+            carry = data.at(i) >> (32 - shifts);
         }
 
-        residue = residue - temp;
-        LongNumber two(2UL);
-        uint32_t pow = residueBitLength - divisorBitLength;
-        LongNumber power(pow);
-        fraction = fraction + two.toPowerOf(power);
+        for(int i = numberOfWords; i < ARRAY_SIZE; ++i)
+            res.data.at(i) = C.data.at(i - numberOfWords);
+        return res;
+    } else {
+        for (int i = 0; i < ARRAY_SIZE; i++)
+            C.data.at(i) = data.at(i);
+
+        for (int i = numberOfWords; i < ARRAY_SIZE; ++i)
+            res.data.at(i) = C.data.at(i - numberOfWords);
+        
+        return res;
+    }
+}
+
+LongNumber LongNumber::operator / (const LongNumber& other) {
+    if (other == LongNumber()) 
+        return LongNumber(0);
+
+    if(*this == other)
+        return LongNumber(1);
+
+    int k = other.bitLength();
+    LongNumber R = *this;
+    LongNumber Q(0);
+
+    while (R >= other) {
+        int t = R.bitLength();
+        LongNumber C = other.bitShiftToHigh(t - k);
+       
+        if (R < C) {
+            t--;
+            C = other.bitShiftToHigh(t - k);
+        }
+       
+        R = R - C;
+        LongNumber one(1);
+        Q = Q + one.bitShiftToHigh(t - k);
+
+        if(R == other)
+            return Q;
     }
 
-    return fraction;
+    return Q;
 }
 
-bool LongNumber::operator == (const LongNumber& other) {
-    int i = data.size() - 1;
-    
-    while(data.at(i) == other.data.at(i))
-        i--;
-
-    return i == -1;
+bool LongNumber::operator == (const LongNumber& other) const {
+    for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        if (data.at(i) != other.data.at(i)) {
+            return false;
+        }
+    }
+    return true;
 }
 
-bool LongNumber::operator != (const LongNumber& other) {
+bool LongNumber::operator != (const LongNumber& other) const {
     return !(*this == other);
 }
 
-bool LongNumber::operator > (const LongNumber& other) {
-    int i = data.size() - 1;
-    
-    while(data.at(i) == other.data.at(i))
-        i--;
+bool LongNumber::operator > (const LongNumber& other) const {
+    int i = ARRAY_SIZE - 1;
+    for(i; i > -1; i--) {
+        if(data.at(i) != other.data.at(i))
+            break;
+    } 
 
-    return data.at(i) > other.data.at(i);
+    if (i == -1) 
+        return false;
+    else 
+        return data.at(i) > other.data.at(i); 
 }
 
-bool LongNumber::operator < (const LongNumber& other) {
-    return !(*this > other);
+bool LongNumber::operator < (const LongNumber& other) const {
+    int i = ARRAY_SIZE - 1;
+    for(i; i > -1; i--) {
+        if(data.at(i) != other.data.at(i))
+            break;
+    } 
+
+    if (i == -1) 
+        return false;
+    else 
+        return data.at(i) < other.data.at(i); 
 }
 
-bool LongNumber::operator <= (const LongNumber &other) {
-    return (*this < other) || (*this == other);
+bool LongNumber::operator <= (const LongNumber &other) const {
+    return (*this == other) || (*this < other);
 }
 
-bool LongNumber::operator >= (const LongNumber &other) {
+bool LongNumber::operator >= (const LongNumber &other) const {
     return (*this > other) || (*this == other);
-}
-
-LongNumber LongNumber::operator >> (const int shiftCount) {
-    LongNumber result = *this;
-    
-    for (int i = 0; i < shiftCount; i++) {
-        uint32_t carry = 0;
-        for (int j = 0; j < ARRAY_SIZE; j++) {
-            uint32_t temp = result.data[j];
-            result.data[j] = (temp >> 1) | (carry << 31);
-        }
-    }
-    
-    return result;
-}
-
-LongNumber LongNumber::operator << (const int shiftCount) {
-    LongNumber result = *this;
-    
-    for (int i = 0; i < shiftCount; i++) {
-        uint32_t carry = 0;
-        for (int j = ARRAY_SIZE - 1; j >= 0; j--) {
-            uint32_t temp = result.data[j];
-            result.data[j] = (temp << 1) | carry;
-            carry = (temp >> 31) & 1;
-        }
-    }
-    
-    return result;
 }
 
 LongNumber LongNumber::toSquare() {
@@ -262,13 +334,14 @@ LongNumber LongNumber::toSquare() {
 
 LongNumber LongNumber::toPowerOf(const LongNumber& power) {
     std::string binaryRepresentation = power.toBinaryString();
-    LongNumber res;
+    LongNumber res(1);
 
-    for(int i = 0; i <= binaryRepresentation.size(); i++) {
-        if(binaryRepresentation.at(i) == '1')
+    for (int i = binaryRepresentation.size() - 1; i >= 0; i--) {
+        if (binaryRepresentation.at(i) == '1')
             res = res * (*this);
-        
-        toSquare();
+
+        if (i > 0)
+            *this = this->toSquare();
     }
 
     return res;
