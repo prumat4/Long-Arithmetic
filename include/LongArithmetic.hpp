@@ -20,9 +20,9 @@ private:
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
     int bitLength() const;
     uint32_t hexCharToDecimal(char c);
-    LongNumber bitShiftToHigh(const int index) const;
 
 public:
+    LongNumber bitShiftToHigh(const int index) const;
     LongNumber();
     LongNumber(uint32_t someInt);
     LongNumber(std::array<uint32_t, ARRAY_SIZE> arr);
