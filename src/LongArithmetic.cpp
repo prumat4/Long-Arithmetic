@@ -208,11 +208,10 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     for(int i = 0; i < data.size(); i++) {
         uint64_t temp = static_cast<uint64_t>(data.at(i)) - static_cast<uint64_t>(other.data.at(i)) - borrow;
 
-        if(temp >= 0) {
+        if(temp >> 32 == 0) {
             difference.data.at(i) = static_cast<uint32_t>(temp);
             borrow = 0;
         } else {
-            // 1ULL = telling compiler that this 1 is unsigned long long type
             difference.data.at(i) = static_cast<uint32_t>(temp + (1ULL << 32));
             borrow = 1;
         }
@@ -260,11 +259,9 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
     int k = other.bitLength();
     LongNumber R = *this;
     LongNumber Q(0);
-
     while (R >= other) {
         int t = R.bitLength();
         LongNumber C = other.bitShiftToHigh(t - k);
-       
         if (R < C) {
             t--;
             C = other.bitShiftToHigh(t - k);
@@ -273,7 +270,7 @@ LongNumber LongNumber::operator / (const LongNumber& other) {
         R = R - C;
         LongNumber one(1);
         Q = Q + one.bitShiftToHigh(t - k);
-
+        
         if(R == other)
             return Q;
     }
