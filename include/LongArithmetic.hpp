@@ -45,9 +45,6 @@ public:
     bool operator < (const LongNumber& other) const;
     bool operator <= (const LongNumber& other) const;
     
-    bool isOdd() const;
-    bool isEven() const;
-
     LongNumber toSquare();
     LongNumber toPowerOf(const LongNumber& power);
     int firstSignificantBit() const;
@@ -55,9 +52,26 @@ public:
     std::string toBinaryString() const;
     void fromBinaryString(const std::string& binaryString);
     std::string toHexString() const;
-    
+    LongNumber killLastDigits(int index);
+    int DigitCount() const;
     LongNumber generateRandomNumber(const int numberOfDigits);
 };
 
 LongNumber gcd(LongNumber num1, LongNumber num2);
 LongNumber lcm(LongNumber num1, LongNumber num2);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                    // move in separate file 
+
+class LongNumberMod {
+private:
+    LongNumber number;
+    LongNumber modulo;
+public:
+    LongNumberMod();
+    LongNumberMod(const LongNumber& _number, const LongNumber& _modulo);
+    
+    LongNumberMod operator = (const LongNumberMod& other);
+    LongNumberMod operator + (const LongNumberMod& other);
+    LongNumberMod operator - (const LongNumberMod& other);
+};
