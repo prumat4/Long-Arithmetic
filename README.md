@@ -11,7 +11,7 @@ https://github.com/prumat4/Long-Arithmetic-Lib.git
 
 2. Navigate to the project directory:
 ```bash 
-cd LongArithmeticLib
+cd Long-Arithmetic
 ```
 
 3. Create a build directory:
@@ -51,7 +51,7 @@ To use LongArithmeticLib in your own project, follow these steps:
 
 1. Include the necessary header files in your C++ code:
 ```c++
-#include "LongArithmeticLib/LongArithmeti.hpp"
+#include "Long-Arithmetic/LongNumMod.hpp"
 ```
 
 2. Link your project with the LongArithmeticLib library:
