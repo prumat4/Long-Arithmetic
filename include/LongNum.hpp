@@ -59,20 +59,5 @@ public:
 
 LongNumber gcd(LongNumber num1, LongNumber num2);
 LongNumber lcm(LongNumber num1, LongNumber num2);
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                                    // move in separate file 
-
-class LongNumberMod {
-private:
-    LongNumber number;
-    LongNumber modulo;
-public:
-    LongNumberMod();
-    LongNumberMod(const LongNumber& _number, const LongNumber& _modulo);
-    
-    LongNumberMod operator = (const LongNumberMod& other);
-    LongNumberMod operator + (const LongNumberMod& other);
-    LongNumberMod operator - (const LongNumberMod& other);
-    LongNumberMod operator * (const LongNumberMod& other);
-};
+LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& coefficient);
+LongNumber calculateСoefficient(const int power, const LongNumber& num);

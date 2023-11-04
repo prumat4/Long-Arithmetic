@@ -1,4 +1,4 @@
-#include "LongArithmetic.hpp"
+#include "LongNum.hpp"
 
 LongNumber::LongNumber() {
     data.fill(0);
@@ -407,6 +407,15 @@ LongNumber LongNumber::killLastDigits(int index) {
     return temp;
 }
 
+int LongNumber::DigitCount() const {
+    for(int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        if (i == 0)
+            return i;
+    }
+
+    return -1;
+}
+
 LongNumber gcd(LongNumber num1, LongNumber num2) {
     if (num1 == LongNumber(0)) {
         return num2;
@@ -429,12 +438,6 @@ LongNumber lcm(LongNumber num1, LongNumber num2) {
     return (num1 * num2) / gcd(num1, num2); 
 }
 
-int LongNumber::DigitCount() const {
-    for(int i = ARRAY_SIZE - 1; i >= 0; i--) {
-        if (i == 0)
-            return i;
-    }
-}
 // power = k from pseudo code 
 LongNumber calculateСoefficient(const int power, const LongNumber& num) {
     if(power == 32) {
@@ -449,7 +452,7 @@ LongNumber calculateСoefficient(const int power, const LongNumber& num) {
     return base / num;
 }
 
-LongNumber BarretReduction(LongNumber& x, LongNumber& n, const LongNumber& coefficient) {
+LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& coefficient) {
     int k = n.DigitCount();
     LongNumber q = x.killLastDigits(k - 1);
     q = q * coefficient;
@@ -460,45 +463,4 @@ LongNumber BarretReduction(LongNumber& x, LongNumber& n, const LongNumber& coeff
         reduction = reduction - n;
 
     return reduction; 
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                                    // move in separate file 
-LongNumberMod::LongNumberMod() {
-    number = LongNumber(1);
-    modulo = LongNumber(1);
-}
-
-LongNumberMod::LongNumberMod(const LongNumber& _number, const LongNumber& _modulo) {
-    number = _number;
-    modulo = _modulo;
-}
-
-LongNumberMod LongNumberMod::operator = (const LongNumberMod& other) {
-    this->number = other.number;
-    this->modulo = other.modulo;
-}
-
-LongNumberMod LongNumberMod::operator + (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
-
-    LongNumber temp = this->number + other.number;
-    LongNumber summary = BarretReduction(temp, modulo, coefficient);
-}
-
-LongNumberMod LongNumberMod::operator - (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
-
-    LongNumber temp = this->number - other.number;
-    LongNumber summary = BarretReduction(temp, modulo, coefficient);
-}
-
-LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
-
-    LongNumber temp = this->number * other.number;
-    LongNumber summary = BarretReduction(temp, modulo, coefficient);
 }
