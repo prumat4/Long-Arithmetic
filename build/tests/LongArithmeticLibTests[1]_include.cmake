@@ -1,0 +1,5 @@
+if(EXISTS "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/build/tests/LongArithmeticLibTests[1]_tests.cmake")
+  include("/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/build/tests/LongArithmeticLibTests[1]_tests.cmake")
+else()
+  add_test(LongArithmeticLibTests_NOT_BUILT LongArithmeticLibTests_NOT_BUILT)
+endif()

@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/build/src",
+  "command": "/usr/bin/g++  -I/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/src/../include -g -std=gnu++14 -o CMakeFiles/LongArithmeticLib.dir/LongArithmetic.cpp.o -c /home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/src/LongArithmetic.cpp",
+  "file": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/src/LongArithmetic.cpp"
+},
+{
+  "directory": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/build/tests",
+  "command": "/usr/bin/g++  -I/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/src/../include -g -DGTEST_HAS_PTHREAD=1 -std=gnu++14 -o CMakeFiles/LongArithmeticLibTests.dir/LongArithmeticTests.cpp.o -c /home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/tests/LongArithmeticTests.cpp",
+  "file": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/tests/LongArithmeticTests.cpp"
+},
+{
+  "directory": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/build/examples",
+  "command": "/usr/bin/g++  -I/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/src/../include -g -std=gnu++14 -o CMakeFiles/main.dir/main.cpp.o -c /home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/examples/main.cpp",
+  "file": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/examples/main.cpp"
+},
+{
+  "directory": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/build/measurment",
+  "command": "/usr/bin/g++  -I/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/src/../include -g -std=gnu++14 -o CMakeFiles/averageTime.dir/averageTime.cpp.o -c /home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/measurment/averageTime.cpp",
+  "file": "/home/logi/Desktop/uni/TERM5/CPOM/Long-Arithmetic/measurment/averageTime.cpp"
+}
+]

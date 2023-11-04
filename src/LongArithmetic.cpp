@@ -347,3 +347,19 @@ LongNumber LongNumber::toPowerOf(const LongNumber& power) {
 
     return res;
 }
+
+LongNumber LongNumber::generateRandomNumber(const int numberOfDigits) {
+    if (numberOfDigits <= 0) 
+        return LongNumber(0);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<uint32_t> distribution(0, UINT32_MAX);
+
+    std::array<uint32_t, ARRAY_SIZE> randomData;
+    for (int i = 0; i < numberOfDigits; i++) 
+        randomData.at(i) = distribution(gen);
+
+    LongNumber randomLongNumber(randomData);
+    return randomLongNumber;
+}

@@ -11,3 +11,6 @@ add_subdirectory(tests)
 
 # Build the example
 add_subdirectory(examples)
+
+add_subdirectory(measurment)
+

@@ -4,6 +4,7 @@
 #include <array>
 #include <algorithm>
 #include <cmath>
+#include <random>
 
 #define ARRAY_SIZE 64
 // num lenght is fixed 2048 bits
@@ -21,7 +22,6 @@ private:
     uint32_t hexCharToDecimal(char c);
     LongNumber bitShiftToHigh(const int index) const;
     std::pair<LongNumber, LongNumber> LongDivMod(const LongNumber& divisor) const;
-
 public:
     LongNumber();
     LongNumber(uint32_t someInt);
@@ -50,4 +50,6 @@ public:
     std::string toBinaryString() const;
     void fromBinaryString(const std::string& binaryString);
     std::string toHexString() const;
+    
+    LongNumber generateRandomNumber(const int numberOfDigits);
 };

@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/averageTime.dir/averageTime.cpp.o -o averageTime  ../src/libLongArithmeticLib.a 
