@@ -3,6 +3,7 @@ project(LongArithmeticLib)
 
 set(CMAKE_CXX_STANDARD 14)
 
+# Build the source file of a library 
 add_subdirectory(src)
 
 # Build the tests
@@ -12,5 +13,5 @@ add_subdirectory(tests)
 # Build the example
 add_subdirectory(examples)
 
+# Build the measurments file
 add_subdirectory(measurment)
-
