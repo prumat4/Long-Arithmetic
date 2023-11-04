@@ -1,0 +1,112 @@
+\documentclass{article}
+\usepackage[english,ukrainian]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{color}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\begin{document}
+
+\newpage
+\section{Мета}
+\quad Отримання практичних навичок програмної реалізації багаторозрядної арифметики;
+ознайомлення з прийомами ефективної реалізації критичних по часу ділянок програмного коду та
+методами оцінки їх ефективності.
+
+\section{Реалізація}
+\quad Для зв'язування усіх компонент бібліотеки в одне ціле я використовував CMake, проект скаладаєть з 5 папок:
+
+\begin{itemize}
+\item examples - містить файли main.cpp - приклад використання бібліотеки
+\item include - містить файл LongArithmetic.hpp - хедер, що містить декларація основного класу
+\item src - містить файл LongArithmetic.cpp - файл, що містить реалізацію основного класу
+\item tests - містить LongArithmeticTests.cpp - файл, що містить реалізацію юніт тестів класу використовуючи бібліотеку GoogleTests
+\item measurment - містить averageTime.cpp - програма, яка використовується для заміру часу роботи 
+\end{itemize}
+
+\section{Середній час роботи операцій}
+\quad 
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Розмір} & \textbf{Додавання (ns)} & \textbf{Віднімання (ns)} & \textbf{Множення (ns)} & \textbf{Ділення (ns)} \\
+\hline
+2 & 1199.66 & 1845.61 & 170933 & 1245.42 \\
+4 & 1043.25 & 1601.67 & 151091 & 1123.3 \\
+8 & 1051.22 & 1612.7 & 149704 & 1154.3 \\
+16 & 1042.08 & 1607.66 & 148633 & 1286.78 \\
+32 & 1042.56 & 1610.17 & 149356 & 1158.01 \\
+\hline
+\end{tabular}
+\caption{Середній час виконання операцій}
+\label{tab:comparison}
+\end{table}
+\section{Представлення чисел та результатів операцій}
+
+\begin{itemize}
+\item Представлення \texttt{ln1}:
+\begin{verbatim}
+23A6F9B50D34A7E071EC59F90C128E775FA3C0F3E1CDD13C963C64166D0DE
+107E98E1523DD70C92724A35E429E741E036655F4E4FA267D08079F4ABFB2D2
+F286AA6BCA5BFC1B135B0C3D6F4E53F5ED5381815
+\end{verbatim}
+
+\item Представлення \texttt{ln2}:
+\begin{verbatim}
+7FD6C21CC86C06C7219C96A88141C47FEBEDD1B1742A9A2D9F4A15A8F991308
+8360E7313C8AA5DFA0009DFFCFB52B1C6EDBD39213D8E3F25FD40098F1CC522
+6D4AB6ED52FDADB34D7E4B85888C9422D
+\end{verbatim}
+
+\item Додавання:
+\begin{verbatim}
+ln1 + ln2 = 23A6FA34E3F6C4A8DDF3211AA8A936F8A16840DFCF9F82B0C0D691B5B7238A
+017ABE9D59EBE3DCEFCF015842A8541AFEB907BBD2B75F9E4595DE70BCF2DC8
+1A36F8E37A6B3086658B9F0BCCC9F7B75E015A42
+\end{verbatim}
+
+\item Віднімання:
+\begin{verbatim}
+ln1 - ln2 = 23A6F93536728B1805E592D76F7BE5F61DDF4107F3FC1FC86BA2367722F8380
+E585D8CEDCEFDB55E7A4564429494210813A42DF73CED5BCA796024C272C963
+69E5495D11452DC05D5E8A21D0087064C6ED5E8
+\end{verbatim}
+
+\item Множення:
+\begin{verbatim}
+ln1 * ln2 = 11CDBE7E1A4E2B947725536DCFB06D975C6FF2B93348176FF0CF438EF0B713
+C2BDF6D53DD0E8503014257D37008002103C1CFA2F8615E0AFF63165D4A661
+D8B2D6FC451B937A5FF8D296C107FD68AD92FE7D8BF0AEE1F0737FD5661D7D7
+1F6EA6875684EA0B3EABC87BC30E5DE2A3B3E07A57A51FF33A4208830CD1C2C
+A626B53D88D9DFF5D0C6EC6BD0875CB6C4EF1221D477AC2F73AB32B8E1FBA9
+2BB2018EA5B1
+\end{verbatim}
+
+\item Ділення:
+\begin{verbatim}
+ln1 / ln2 = 4764F4
+\end{verbatim}
+
+\item Остача від ділення:
+\begin{verbatim}
+ln1 % ln2 = 228D5CF8C59B5AFEFC36CE381473F2B60715677D1D1A4923517D3011FCCB192
+20EA7604B47B766553E8C70E2DCF740018A16A44F483F5B65B43CD4A18D033
+1B3DEE921B4FCF50B4B65505BC7D107131
+\end{verbatim}
+
+\item Піднесення до квадрата:
+\begin{verbatim}
+ln1^2 = 4F715304BFB39ED31F0C3FF145D513E58722935ECF4B0B9384C5D8F32CB28A
+133A6DF5D48464C318E1186508C38545136F61F815E81ED4AB74C43603BA1D
+25C15BBD9DAD81EC053FB4DC472C677BC31ACAFB153CFDEC341C1183493BD5
+E8C45106CC7A23C477EE303483368BF21781FE9FBC2A9B2A5404100ECAAFB7
+7FA92848C67FA6A08A0EB7E7DA44AECC989B8ECE866B687406BFB979AF3247
+572003469C97D73F1B9
+\end{verbatim}
+\end{itemize}
+\bibliographystyle{alpha}
+
+\end{document}

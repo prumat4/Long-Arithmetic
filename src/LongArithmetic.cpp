@@ -21,7 +21,7 @@ LongNumber::LongNumber(const std::string& hexString) {
     int shift = 0;
 
     for (int i = len - 1; i >= 0; i--) {
-        char c = hexString[i];
+        char c = hexString.at(i);
         uint32_t temp = hexCharToDecimal(c);
 
         data.at(index) |= (temp << shift);
@@ -58,7 +58,6 @@ std::string LongNumber::removeLeadingZeros(std::string& binaryString) const {
 
 std::string LongNumber::toBinaryString() const {
     std::string binaryString;
-    
     for (int i = data.size() - 1; i >= 0; i--) {
         uint32_t value = data.at(i);
         
@@ -124,7 +123,6 @@ std::string LongNumber::toHexString() const {
 
 int LongNumber::firstSignificantBit() const {
     auto binaryString = this->toBinaryString();
-
     int index = binaryString.rfind("1");
 
     if(index != binaryString.size())
@@ -136,6 +134,11 @@ int LongNumber::firstSignificantBit() const {
 int LongNumber::bitLength() const {
     std::string ans = this->toBinaryString();
     return ans.size();
+}
+
+LongNumber& LongNumber::operator = (const LongNumber& other){
+    data = other.data;
+    return *this;
 }
 
 void LongNumber::shiftDigitsToHigh(const int index) {
@@ -177,12 +180,6 @@ LongNumber LongNumber::operator * (const LongNumber& other) {
     return res;
 }
 
-LongNumber& LongNumber::operator = (const LongNumber& other){
-    data = other.data;
-
-    return *this;
-}
-
 LongNumber LongNumber::operator + (const LongNumber& other) {
     uint32_t carry = 0;
     LongNumber sum;
@@ -208,11 +205,10 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     for(int i = 0; i < data.size(); i++) {
         uint64_t temp = static_cast<uint64_t>(data.at(i)) - static_cast<uint64_t>(other.data.at(i)) - borrow;
 
-        if(temp >= 0) {
+        if(temp >> 32 == 0) {
             difference.data.at(i) = static_cast<uint32_t>(temp);
             borrow = 0;
         } else {
-            // 1ULL = telling compiler that this 1 is unsigned long long type
             difference.data.at(i) = static_cast<uint32_t>(temp + (1ULL << 32));
             borrow = 1;
         }
@@ -250,42 +246,47 @@ LongNumber LongNumber::bitShiftToHigh(const int index) const {
     }
 }
 
-LongNumber LongNumber::operator / (const LongNumber& other) {
-    if (other == LongNumber()) 
-        return LongNumber(0);
+std::pair<LongNumber, LongNumber> LongNumber::LongDivMod(const LongNumber& divisor) const {
+    if (divisor == LongNumber()) 
+        return std::make_pair(LongNumber(0), LongNumber(0));
 
-    if(*this == other)
-        return LongNumber(1);
+    if (*this == divisor)
+        return std::make_pair(LongNumber(1), LongNumber(0));
 
-    int k = other.bitLength();
-    LongNumber R = *this;
-    LongNumber Q(0);
+    int divisorBitLength = divisor.bitLength();
+    LongNumber remainder = *this;
+    LongNumber quotient(0);
 
-    while (R >= other) {
-        int t = R.bitLength();
-        LongNumber C = other.bitShiftToHigh(t - k);
-       
-        if (R < C) {
-            t--;
-            C = other.bitShiftToHigh(t - k);
+    while (remainder >= divisor) {
+        int remainderBitLength = remainder.bitLength();
+        LongNumber shiftedDivisor = divisor.bitShiftToHigh(remainderBitLength - divisorBitLength);
+        if (remainder < shiftedDivisor) {
+            remainderBitLength--;
+            shiftedDivisor = divisor.bitShiftToHigh(remainderBitLength - divisorBitLength);
         }
        
-        R = R - C;
+        remainder = remainder - shiftedDivisor;
         LongNumber one(1);
-        Q = Q + one.bitShiftToHigh(t - k);
-
-        if(R == other)
-            return Q;
+        quotient = quotient + one.bitShiftToHigh(remainderBitLength - divisorBitLength);
     }
 
-    return Q;
+    return std::make_pair(quotient, remainder);
+}
+
+LongNumber LongNumber::operator / (const LongNumber& divisor) {
+    auto ans = LongDivMod(divisor);
+    return ans.first;
+}
+
+LongNumber LongNumber::operator % (const LongNumber& divisor) {
+    auto ans = LongDivMod(divisor);
+    return ans.second;
 }
 
 bool LongNumber::operator == (const LongNumber& other) const {
     for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
-        if (data.at(i) != other.data.at(i)) {
+        if (data.at(i) != other.data.at(i)) 
             return false;
-        }
     }
     return true;
 }
@@ -345,4 +346,20 @@ LongNumber LongNumber::toPowerOf(const LongNumber& power) {
     }
 
     return res;
+}
+
+LongNumber LongNumber::generateRandomNumber(const int numberOfDigits) {
+    if (numberOfDigits <= 0) 
+        return LongNumber(0);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<uint32_t> distribution(0, UINT32_MAX);
+
+    std::array<uint32_t, ARRAY_SIZE> randomData;
+    for (int i = 0; i < numberOfDigits; i++) 
+        randomData.at(i) = distribution(gen);
+
+    LongNumber randomLongNumber(randomData);
+    return randomLongNumber;
 }
