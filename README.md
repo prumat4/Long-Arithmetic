@@ -1,5 +1,17 @@
 # Long-Arithmetic-Lib
 
+## Software requirements
+CMake, GoogleTests and at least C++14  
+
+## Short project description
+The project contains 6 different folders: 
+1. `include` - the library header is stored here
+2. `rc` - stores the library implementation
+3. `examples` - stores the main.cpp where you can use the library
+4. `tests` - contains the tests using the GoogleTests framework
+5. `measurments` - contains the program that I used to measure the average execution time
+6. `report` - here you can view the report in pdf and .tex format of the implementation 
+
 ## Build and Usage
 
 Follow these steps to build and run LongArithmeticLib, including tests and examples:
