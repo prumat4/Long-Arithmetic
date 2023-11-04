@@ -74,4 +74,5 @@ public:
     LongNumberMod operator = (const LongNumberMod& other);
     LongNumberMod operator + (const LongNumberMod& other);
     LongNumberMod operator - (const LongNumberMod& other);
+    LongNumberMod operator * (const LongNumberMod& other);
 };

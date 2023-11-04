@@ -494,3 +494,11 @@ LongNumberMod LongNumberMod::operator - (const LongNumberMod& other) {
     LongNumber temp = this->number - other.number;
     LongNumber summary = BarretReduction(temp, modulo, coefficient);
 }
+
+LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
+    int k = number.DigitCount();
+    LongNumber coefficient = calculateСoefficient(k, other.number);
+
+    LongNumber temp = this->number * other.number;
+    LongNumber summary = BarretReduction(temp, modulo, coefficient);
+}
