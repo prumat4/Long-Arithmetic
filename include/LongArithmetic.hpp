@@ -60,3 +60,4 @@ public:
 };
 
 LongNumber gcd(LongNumber num1, LongNumber num2);
+LongNumber lcm(LongNumber num1, LongNumber num2);

@@ -423,3 +423,7 @@ LongNumber gcd(LongNumber num1, LongNumber num2) {
 
     return num1;
 }
+
+LongNumber lcm(LongNumber num1, LongNumber num2) {
+    return (num1 * num2) / gcd(num1, num2); 
+}
