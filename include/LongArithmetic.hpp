@@ -22,6 +22,7 @@ private:
     uint32_t hexCharToDecimal(char c);
     LongNumber bitShiftToHigh(const int index) const;
     std::pair<LongNumber, LongNumber> LongDivMod(const LongNumber& divisor) const;
+
 public:
     LongNumber();
     LongNumber(uint32_t someInt);
@@ -35,7 +36,9 @@ public:
     LongNumber operator - (const LongNumber& other);
     LongNumber operator / (const LongNumber& divisor);
     LongNumber operator % (const LongNumber& other);
-    
+    LongNumber operator << (const int index) const;
+    LongNumber operator >> (const int index) const;
+
     LongNumber toSquare();
     LongNumber toPowerOf(const LongNumber& power);
     int firstSignificantBit() const;

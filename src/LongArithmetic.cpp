@@ -217,30 +217,62 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     return difference;
 }
 
-LongNumber LongNumber::bitShiftToHigh(const int index) const {
+LongNumber LongNumber::operator >> (const int index) const {
     if(index <= 0 || index >= ARRAY_SIZE)
         return *this;
     
+    uint32_t carry = 0;
     int numberOfWords = index / 32;
     int shifts = index % 32;
+    LongNumber temp, res;
+
+    if(shifts != 0) {
+        for(int i = ARRAY_SIZE - 1; i > 0; i--) {
+            temp.data.at(i) = (data.at(i) >> shifts) + (carry << (32 - shifts));
+            carry = data.at(i) & static_cast<uint32_t>(shifts); 
+        }
+
+        temp.data.at(0) = (data.at(0) >> shifts) + (carry << (32 - shifts));
+
+        for(int i = ARRAY_SIZE - 1 - numberOfWords; i >= 0; i--) 
+            res.data.at(i) = temp.data.at(i + numberOfWords);
+
+        return res;
+    } else {
+        for(int i = ARRAY_SIZE - 1; i >= 0; i--) 
+            temp.data.at(i) = data.at(i);
+
+        for(int i = ARRAY_SIZE - numberOfWords - 1; i >= 0; i--) 
+            res.data.at(i) = temp.data.at(i + numberOfWords);
+        
+        return res;
+    }
+}
+
+LongNumber LongNumber::operator << (const int index) const {
+    if(index <= 0 || index >= ARRAY_SIZE)
+        return *this;
+    
     uint32_t carry = 0;
-    LongNumber C, res;
+    int numberOfWords = index / 32;
+    int shifts = index % 32;
+    LongNumber temp, res;
 
     if(shifts != 0) {
         for(int i = 0; i < ARRAY_SIZE; i++) {
-            C.data.at(i) = (data.at(i) << shifts) + carry;
+            temp.data.at(i) = (data.at(i) << shifts) + carry;
             carry = data.at(i) >> (32 - shifts);
         }
 
         for(int i = numberOfWords; i < ARRAY_SIZE; ++i)
-            res.data.at(i) = C.data.at(i - numberOfWords);
+            res.data.at(i) = temp.data.at(i - numberOfWords);
         return res;
     } else {
         for (int i = 0; i < ARRAY_SIZE; i++)
-            C.data.at(i) = data.at(i);
+            temp.data.at(i) = data.at(i);
 
         for (int i = numberOfWords; i < ARRAY_SIZE; ++i)
-            res.data.at(i) = C.data.at(i - numberOfWords);
+            res.data.at(i) = temp.data.at(i - numberOfWords);
         
         return res;
     }
@@ -259,15 +291,15 @@ std::pair<LongNumber, LongNumber> LongNumber::LongDivMod(const LongNumber& divis
 
     while (remainder >= divisor) {
         int remainderBitLength = remainder.bitLength();
-        LongNumber shiftedDivisor = divisor.bitShiftToHigh(remainderBitLength - divisorBitLength);
+        LongNumber shiftedDivisor = divisor << (remainderBitLength - divisorBitLength);
         if (remainder < shiftedDivisor) {
             remainderBitLength--;
-            shiftedDivisor = divisor.bitShiftToHigh(remainderBitLength - divisorBitLength);
+            shiftedDivisor = divisor << (remainderBitLength - divisorBitLength);
         }
        
         remainder = remainder - shiftedDivisor;
         LongNumber one(1);
-        quotient = quotient + one.bitShiftToHigh(remainderBitLength - divisorBitLength);
+        quotient = quotient + (one << (remainderBitLength - divisorBitLength));
     }
 
     return std::make_pair(quotient, remainder);
