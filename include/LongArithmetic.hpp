@@ -20,7 +20,6 @@ private:
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
     int bitLength() const;
     uint32_t hexCharToDecimal(char c);
-    LongNumber bitShiftToHigh(const int index) const;
     std::pair<LongNumber, LongNumber> LongDivMod(const LongNumber& divisor) const;
 
 public:
@@ -39,16 +38,19 @@ public:
     LongNumber operator << (const int index) const;
     LongNumber operator >> (const int index) const;
 
-    LongNumber toSquare();
-    LongNumber toPowerOf(const LongNumber& power);
-    int firstSignificantBit() const;
-
     bool operator == (const LongNumber& other) const;
     bool operator != (const LongNumber& other) const;
     bool operator > (const LongNumber& other) const;
     bool operator >= (const LongNumber& other) const;
     bool operator < (const LongNumber& other) const;
     bool operator <= (const LongNumber& other) const;
+    
+    bool isOdd() const;
+    bool isEven() const;
+
+    LongNumber toSquare();
+    LongNumber toPowerOf(const LongNumber& power);
+    int firstSignificantBit() const;
 
     std::string toBinaryString() const;
     void fromBinaryString(const std::string& binaryString);
@@ -56,3 +58,5 @@ public:
     
     LongNumber generateRandomNumber(const int numberOfDigits);
 };
+
+LongNumber gcd(LongNumber num1, LongNumber num2);

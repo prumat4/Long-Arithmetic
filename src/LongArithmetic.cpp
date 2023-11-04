@@ -395,3 +395,31 @@ LongNumber LongNumber::generateRandomNumber(const int numberOfDigits) {
     LongNumber randomLongNumber(randomData);
     return randomLongNumber;
 }
+
+bool LongNumber::isEven() const {
+    const LongNumber two (2);
+    LongNumber temp = *this;
+    return temp % two == LongNumber();
+}
+
+bool LongNumber::isOdd() const {
+    return !isEven();
+}
+
+LongNumber gcd(LongNumber num1, LongNumber num2) {
+    if (num1 == LongNumber(0)) {
+        return num2;
+    }
+
+    if (num2 == LongNumber(0)) {
+        return num1;
+    }
+
+    while (num2 != LongNumber(0)) {
+        LongNumber remainder = num1 % num2;
+        num1 = num2;
+        num2 = remainder;
+    }
+
+    return num1;
+}
