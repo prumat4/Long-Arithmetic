@@ -12,6 +12,8 @@ public:
     LongNumberMod operator - (const LongNumberMod& other);
     LongNumberMod operator * (const LongNumberMod& other);
     
+    bool operator == (const LongNumberMod& other) const;
+    
     LongNumberMod toSquare();
     LongNumberMod toPowerOf(const LongNumberMod& power);
     static void initializeModulus(const LongNumber& _modulo);

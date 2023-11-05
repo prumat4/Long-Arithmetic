@@ -55,6 +55,10 @@ LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
     return res;
 }
 
+bool LongNumberMod::operator==(const LongNumberMod &other) const {
+    return number == other.number;
+}
+
 LongNumberMod LongNumberMod::toSquare () {
     int k = number.DigitCount();
     LongNumber coefficient = calculateСoefficient(k, number);

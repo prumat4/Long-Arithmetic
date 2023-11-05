@@ -1,14 +1,14 @@
 #include "../include/LongNumMod.hpp"
 
 int main() {
-    LongNumber num1("23a6f9b50d34a7e071ec59f90c123a6f9b50d34a7e071ec59f90c123a6f9b50d34a7e071ec59f90c123a6f9b50d34a7e071ec59f90c1");
-    LongNumber num2("d52fdadb34d7e4b85888c9422dd52fdadb34d7e4b85888c9422dd52fdadb34d7e4b85888c9422dd52fdadb34d7e4b85888c9422d");
+    LongNumber num1("8349C1D0A8B38D63B809DEB8B2A8A3");
+    LongNumber num2("E9A855F40E9D13ABE9D192F99B123C");
     LongNumber modulus("746fc08325b7cb4f4140a64fc439e91d627b30b6bb9df2bfe86624c1029be0478880efc574fac609281697a6cdb6781cc5b13f68");
     
-    LongNumber a = num1.toPowerOf(LongNumber("4"));
+    LongNumber a = gcd(num1, num2);
     std::cout << a.toHexString() << std::endl;
 
-    LongNumber f("F");
+    LongNumber f("C9");
     LongNumberMod ln1(num1);
     LongNumberMod ln3(num1);
     LongNumberMod ln4(f);
