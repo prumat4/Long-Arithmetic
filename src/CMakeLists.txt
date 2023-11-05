@@ -1,5 +1,6 @@
 add_library(LongArithmeticLib
-    LongArithmetic.cpp
+    LongNum.cpp
+    LongNumMod.cpp
 )
 
 target_include_directories(LongArithmeticLib

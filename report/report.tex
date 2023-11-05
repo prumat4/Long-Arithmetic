@@ -107,6 +107,24 @@ E8C45106CC7A23C477EE303483368BF21781FE9FBC2A9B2A5404100ECAAFB7
 572003469C97D73F1B9
 \end{verbatim}
 \end{itemize}
-\bibliographystyle{alpha}
 
+\section{Середній час роботи модулярних операцій}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Розмір} & \textbf{Додавання (ns)} & \textbf{Віднімання (ns)} & \textbf{Множення (ns)} \\
+\hline
+2 & 318237 & 319171 & 474504 \\
+4 & 330178 & 331911 & 485068 \\
+8 & 307694 & 309986 & 457589 \\
+16 & 348484 & 339196 & 513402\\
+31 & 322405 & 324304 & 0 \\
+\hline
+\end{tabular}
+\caption{Середній час виконання операцій}
+\label{tab:comparison}
+\end{table}
+
+\bibliographystyle{alpha}
 \end{document}
