@@ -16,7 +16,6 @@ private:
 
 private:
     std::string removeLeadingZeros(std::string& binaryString) const;
-    void shiftDigitsToHigh(const int index);
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
     int bitLength() const;
     uint32_t hexCharToDecimal(char c);
@@ -47,6 +46,7 @@ public:
     
     LongNumber toSquare();
     LongNumber toPowerOf(const LongNumber& power);
+    void shiftDigitsToHigh(const int index);
     int firstSignificantBit() const;
 
     std::string toBinaryString() const;

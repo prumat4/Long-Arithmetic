@@ -398,13 +398,8 @@ LongNumber LongNumber::generateRandomNumber(const int numberOfDigits) {
 
 LongNumber LongNumber::killLastDigits(int index) {
     LongNumber temp = *this;
-    int i = ARRAY_SIZE - 1;
-    while(index > 0) {
-        temp.data.at(i) = 0;
-        i--; index--;
-    }
-
-    return temp;
+    LongNumber ans = temp >> (index * 32); 
+    return ans;
 }
 
 int LongNumber::DigitCount() const {
@@ -438,16 +433,14 @@ LongNumber lcm(LongNumber num1, LongNumber num2) {
     return (num1 * num2) / gcd(num1, num2); 
 }
 
-// power = k from pseudo code 
 LongNumber calculateСoefficient(const int power, const LongNumber& num) {
     if(power == 32) {
         std::cout << "Error: power is too big, calceling...\n";
         return LongNumber();
     }
     
-    LongNumber base(1);
-    base = base << 32;
-    base = base << (2 * power);
+    LongNumber base(1); 
+    base.shiftDigitsToHigh(2 * power);
 
     return base / num;
 }
