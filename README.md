@@ -1,6 +1,4 @@
 # Long-Arithmetic-Lib
-## Software requirements
-CMake, GoogleTests and at least C++14  
 
 ## Software requirements
 CMake, GoogleTests and at least C++14  
