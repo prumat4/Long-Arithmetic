@@ -89,6 +89,10 @@ LongNumberMod LongNumberMod::toPowerOf(const LongNumberMod& power) {
     return res;
 }
 
+void LongNumberMod::generateRandomNumber(int size) {
+    number.generateRandomNumber(size);
+}
+
 std::string LongNumberMod::getNumHex() const {
     return number.toHexString();
 }

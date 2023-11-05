@@ -19,4 +19,5 @@ public:
     static void initializeModulus(const LongNumber& _modulo);
     static void setModulus(const LongNumber& _modulo);
     std::string getNumHex() const;
+    void generateRandomNumber(int size);
 };
