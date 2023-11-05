@@ -14,4 +14,4 @@ add_subdirectory(tests)
 add_subdirectory(examples)
 
 # Build the measurments file
-add_subdirectory(measurment)
+add_subdirectory(report)
