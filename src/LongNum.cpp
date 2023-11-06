@@ -209,7 +209,7 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
         }
     }
 
-    if(borrow == 1) {
+    if(borrow != 0) {
         std::runtime_error error("Error: Bigger number is subtracted from the smaller.");
         throw(error);
     }
