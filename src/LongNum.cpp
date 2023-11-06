@@ -194,11 +194,6 @@ LongNumber LongNumber::operator + (const LongNumber& other) {
 }
 
 LongNumber LongNumber::operator - (const LongNumber& other) {
-    if(other > *this) {
-        std::cerr << "Error: Bigger number is substracted from the smaller, returning smaller one...\n";
-        return *this;
-    }
-
     uint32_t borrow = 0;
     LongNumber difference;
 
@@ -209,9 +204,14 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
             difference.data.at(i) = static_cast<uint32_t>(temp);
             borrow = 0;
         } else {
-            difference.data.at(i) = static_cast<uint32_t>(temp + (1ULL << 32));
+            difference.data.at(i) = static_cast<uint32_t>((1ULL << 32)) + static_cast<uint32_t>(temp);
             borrow = 1;
         }
+    }
+
+    if(borrow == 1) {
+        std::runtime_error error("Error: Bigger number is subtracted from the smaller.");
+        throw(error);
     }
 
     return difference;

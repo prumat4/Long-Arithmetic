@@ -55,7 +55,7 @@ LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
     return res;
 }
 
-bool LongNumberMod::operator==(const LongNumberMod &other) const {
+bool LongNumberMod::operator == (const LongNumberMod &other) const {
     return number == other.number;
 }
 
