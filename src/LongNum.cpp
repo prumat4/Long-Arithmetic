@@ -218,7 +218,7 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
 }
 
 LongNumber LongNumber::operator >> (const int index) const {
-    if(index <= 0 || index >= ARRAY_SIZE)
+    if(index <= 0 || index >= ARRAY_SIZE * 32)
         return *this;
     
     uint32_t carry = 0;
@@ -250,7 +250,7 @@ LongNumber LongNumber::operator >> (const int index) const {
 }
 
 LongNumber LongNumber::operator << (const int index) const {
-    if(index <= 0 || index >= ARRAY_SIZE)
+    if(index <= 0 || index >= ARRAY_SIZE * 32)
         return *this;
     
     uint32_t carry = 0;
