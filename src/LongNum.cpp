@@ -310,7 +310,7 @@ LongNumber LongNumber::operator / (const LongNumber& divisor) {
     return ans.first;
 }
 
-LongNumber LongNumber::operator % (const LongNumber& divisor) {
+LongNumber LongNumber::operator % (const LongNumber& divisor) const {
     auto ans = LongDivMod(divisor);
     return ans.second;
 }
@@ -404,11 +404,12 @@ LongNumber LongNumber::killLastDigits(int index) {
 
 int LongNumber::DigitCount() const {
     for(int i = ARRAY_SIZE - 1; i >= 0; i--) {
-        if (i == 0)
-            return i;
+        if (data.at(i) == 0)
+            return i + 1;
+        
+        if(i == 0)
+            return 64;
     }
-
-    return -1;
 }
 
 LongNumber gcd(LongNumber num1, LongNumber num2) {
@@ -433,12 +434,7 @@ LongNumber lcm(LongNumber num1, LongNumber num2) {
     return (num1 * num2) / gcd(num1, num2); 
 }
 
-LongNumber calculateСoefficient(const int power, const LongNumber& num) {
-    if(power == 32) {
-        std::cout << "Error: power is too big, calceling...\n";
-        return LongNumber();
-    }
-    
+LongNumber calculateСoefficient(const int power, const LongNumber& num) {    
     LongNumber base(1); 
     base.shiftDigitsToHigh(2 * power);
 

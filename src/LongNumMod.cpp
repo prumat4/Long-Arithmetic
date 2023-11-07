@@ -26,7 +26,6 @@ LongNumberMod& LongNumberMod::operator = (const LongNumberMod& other) {
 LongNumberMod LongNumberMod::operator + (const LongNumberMod& other) {
     int k = number.DigitCount();
     LongNumber coefficient = calculateСoefficient(k, other.number);
-
     LongNumber temp = this->number + other.number;
     LongNumber sum = BarretReduction(temp, modulus, coefficient);
     
@@ -44,11 +43,23 @@ LongNumberMod LongNumberMod::operator - (const LongNumberMod& other) {
     return res;
 }
 
-LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
 
-    LongNumber temp = this->number * other.number;
+// try calcualte arg via barret and via operator % 
+LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
+    number = number % modulus;
+    std::cout << "number after mod: " << number.toHexString() << std::endl << std::endl;
+    auto some = other.number % modulus;
+    std::cout << "other number after mod: " << some.toHexString() << std::endl << std::endl;
+   
+    LongNumber temp = number * some;
+    std::cout << "temp after mod: " << temp.toHexString() << std::endl << std::endl;
+
+    int k = temp.DigitCount();
+    std::cout << "digit count: " << k << std::endl << std::endl;
+    LongNumber one(1);    
+    LongNumber coefficient = (one << (2*k*32)) / temp;
+    std::cout << "coef: " << coefficient.toHexString() << std::endl << std::endl;
+
     LongNumber mul = BarretReduction(temp, modulus, coefficient);
 
     LongNumberMod res(mul);

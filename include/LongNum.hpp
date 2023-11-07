@@ -33,7 +33,7 @@ public:
     LongNumber operator * (const LongNumber& other);
     LongNumber operator - (const LongNumber& other);
     LongNumber operator / (const LongNumber& divisor);
-    LongNumber operator % (const LongNumber& other);
+    LongNumber operator % (const LongNumber& other) const;
     LongNumber operator << (const int index) const;
     LongNumber operator >> (const int index) const;
 
