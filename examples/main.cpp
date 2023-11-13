@@ -21,7 +21,7 @@ int main() {
     // ln3 = ln1 - ln2;
     // std::cout << ln3.getNumHex() << std::endl;
     
-    auto ln3 = ln1 + ln2;
+    auto ln3 = ln1 * ln2;
     std::cout << ln3.getNumHex() << std::endl;
 
     // ln3 = ln1.toPowerOf(ln2);

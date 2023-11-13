@@ -210,7 +210,7 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
     }
 
     if(borrow != 0) {
-        std::runtime_error error("Error: Bigger number is subtracted from the smaller.");
+        std::runtime_error error("Error: Bigger number is subtracted from the smaller one");
         throw(error);
     }
 
@@ -284,6 +284,9 @@ std::pair<LongNumber, LongNumber> LongNumber::LongDivMod(const LongNumber& divis
 
     if (*this == divisor)
         return std::make_pair(LongNumber(1), LongNumber(0));
+
+    if(*this < divisor)
+        return std::make_pair(LongNumber(0), LongNumber(*this));
 
     int divisorBitLength = divisor.bitLength();
     LongNumber remainder = *this;
@@ -397,19 +400,28 @@ LongNumber LongNumber::generateRandomNumber(const int numberOfDigits) {
 }
 
 LongNumber LongNumber::killLastDigits(int index) {
+    if(index < 0 || index > ARRAY_SIZE)
+        return LongNumber(0);
     LongNumber temp = *this;
-    LongNumber ans = temp >> (index * 32); 
-    return ans;
+    // LongNumber ans = temp >> (index * 32); 
+    // return ans;
+    for(int i = ARRAY_SIZE - 1; i > index; i--) {
+        temp.data.at(i) = 0;
+    }
+
+    return temp;
 }
 
 int LongNumber::DigitCount() const {
-    for(int i = ARRAY_SIZE - 1; i >= 0; i--) {
-        if (data.at(i) == 0)
-            return i + 1;
-        
-        if(i == 0)
-            return 64;
+    int count = 64;
+    for( ; data.at(count - 1) == 0 ; ) {
+        count--;
+
+        if(count == 0)
+            break;
     }
+
+    return count;
 }
 
 LongNumber gcd(LongNumber num1, LongNumber num2) {
@@ -446,6 +458,7 @@ LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& coeffic
     LongNumber q = x.killLastDigits(k - 1);
     q = q * coefficient;
     q = q.killLastDigits(k + 1);
+    std::cout << "q: " << q.toHexString() << std::endl;
 
     LongNumber reduction = x - q * n;
     while(reduction >= n)

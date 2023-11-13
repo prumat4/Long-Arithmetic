@@ -43,23 +43,21 @@ LongNumberMod LongNumberMod::operator - (const LongNumberMod& other) {
     return res;
 }
 
-
 // try calcualte arg via barret and via operator % 
 LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
-    number = number % modulus;
-    std::cout << "number after mod: " << number.toHexString() << std::endl << std::endl;
-    auto some = other.number % modulus;
-    std::cout << "other number after mod: " << some.toHexString() << std::endl << std::endl;
-   
-    LongNumber temp = number * some;
-    std::cout << "temp after mod: " << temp.toHexString() << std::endl << std::endl;
+    LongNumber temp = number * other.number;
+    std::cout << "temp: " << temp.toHexString() << std::endl << std::endl;
+    int t =  number.DigitCount();
+    std::cout << "digit count: " << t << std::endl << std::endl;
 
     int k = temp.DigitCount();
     std::cout << "digit count: " << k << std::endl << std::endl;
-    LongNumber one(1);    
-    LongNumber coefficient = (one << (2*k*32)) / temp;
+    LongNumber one(1); 
+    one.shiftDigitsToHigh(2 * k);
+    std::cout << "one:" << one.toHexString() << std::endl << std::endl;   
+    
+    LongNumber coefficient = one / temp;
     std::cout << "coef: " << coefficient.toHexString() << std::endl << std::endl;
-
     LongNumber mul = BarretReduction(temp, modulus, coefficient);
 
     LongNumberMod res(mul);
