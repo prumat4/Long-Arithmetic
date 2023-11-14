@@ -463,11 +463,8 @@ LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& mu) {
     std::cout << "remainder: " << remainder.toHexString() << std::endl; 
     std::cout << "n: " << n.toHexString() << std::endl; 
 
-    while(remainder >= n) {
+    while(remainder >= n) 
         remainder = remainder - n;
-        // std::cout << "asdasd\n";
-    }
 
-    std::cout << "WE ARE OUT OF CYCLE!!!" << std::endl;
     return remainder;
 }
