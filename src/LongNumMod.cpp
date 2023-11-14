@@ -24,42 +24,25 @@ LongNumberMod& LongNumberMod::operator = (const LongNumberMod& other) {
 }
 
 LongNumberMod LongNumberMod::operator + (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
     LongNumber temp = this->number + other.number;
-    LongNumber sum = BarretReduction(temp, modulus, coefficient);
+    LongNumber sum = temp % modulus;
     
     LongNumberMod res(sum);
     return res;
 }
 
 LongNumberMod LongNumberMod::operator - (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
-
     LongNumber temp = this->number - other.number;
-    LongNumber diff = BarretReduction(temp, modulus, coefficient);
-    LongNumberMod res(diff);
+    LongNumber sub = temp % modulus;
+    
+    LongNumberMod res(sub);
     return res;
 }
 
-// try calcualte arg via barret and via operator % 
 LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
-    LongNumber temp = number * other.number;
-    std::cout << "temp: " << temp.toHexString() << std::endl << std::endl;
-    int t =  number.DigitCount();
-    std::cout << "digit count: " << t << std::endl << std::endl;
-
-    int k = temp.DigitCount();
-    std::cout << "digit count: " << k << std::endl << std::endl;
-    LongNumber one(1); 
-    one.shiftDigitsToHigh(2 * k);
-    std::cout << "one:" << one.toHexString() << std::endl << std::endl;   
+    LongNumber temp = this->number * other.number;
+    LongNumber mul = temp % modulus;
     
-    LongNumber coefficient = one / temp;
-    std::cout << "coef: " << coefficient.toHexString() << std::endl << std::endl;
-    LongNumber mul = BarretReduction(temp, modulus, coefficient);
-
     LongNumberMod res(mul);
     return res;
 }
@@ -69,32 +52,30 @@ bool LongNumberMod::operator == (const LongNumberMod &other) const {
 }
 
 LongNumberMod LongNumberMod::toSquare () {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, number);
-
     LongNumber temp = number.toSquare();
-    LongNumber square = BarretReduction(temp, modulus, coefficient);
-
+    LongNumber square = temp % modulus;
+    
     LongNumberMod res(square);
     return res;
 }
 
 LongNumberMod LongNumberMod::toPowerOf(const LongNumberMod& power) {
-    LongNumber temp(1);
     int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, number);
-    std::string powerInBinary = power.number.toBinaryString();
+    LongNumber coef = calculateСoefficient(this->modulus, 2*k);
+    LongNumber mult(number);
 
-    for(int i = powerInBinary.size() - 1; i >= 0; i--) {
-        if(powerInBinary.at(i) == '1') {
-            temp = BarretReduction(temp * number, modulus, coefficient);
+    std::string binaryRepresentation = power.number.toBinaryString();
+
+    for(int i = binaryRepresentation.size() - 1; i >= 0; i--) {
+        if(binaryRepresentation.at(i) == '1')
+            mult = BarretReduction(mult * number, modulus, coef);
+        
+        if(i > 0) {
+            number = BarretReduction(number.toSquare(), modulus, coef);
         }
-
-        if(i > 0)
-            number = BarretReduction(number.toSquare(), modulus, coefficient);
     }
-
-    LongNumberMod res(number);
+    
+    LongNumberMod res(mult);
     return res;
 }
 

@@ -17,7 +17,6 @@ private:
 private:
     std::string removeLeadingZeros(std::string& binaryString) const;
     void multiplyOneDigit(const uint32_t& digit, LongNumber& res);
-    int bitLength() const;
     uint32_t hexCharToDecimal(char c);
     std::pair<LongNumber, LongNumber> LongDivMod(const LongNumber& divisor) const;
 
@@ -48,11 +47,12 @@ public:
     LongNumber toPowerOf(const LongNumber& power);
     void shiftDigitsToHigh(const int index);
     int firstSignificantBit() const;
+    int bitLength() const;
 
     std::string toBinaryString() const;
     void fromBinaryString(const std::string& binaryString);
     std::string toHexString() const;
-    LongNumber killLastDigits(int index);
+    LongNumber killLastDigits(int index) const;
     int DigitCount() const;
     LongNumber generateRandomNumber(const int numberOfDigits);
 };
@@ -60,4 +60,4 @@ public:
 LongNumber gcd(LongNumber num1, LongNumber num2);
 LongNumber lcm(LongNumber num1, LongNumber num2);
 LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& coefficient);
-LongNumber calculateСoefficient(const int power, const LongNumber& num);
+LongNumber calculateСoefficient(const LongNumber& num, int k);

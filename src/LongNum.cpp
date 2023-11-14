@@ -399,29 +399,23 @@ LongNumber LongNumber::generateRandomNumber(const int numberOfDigits) {
     return randomLongNumber;
 }
 
-LongNumber LongNumber::killLastDigits(int index) {
-    if(index < 0 || index > ARRAY_SIZE)
-        return LongNumber(0);
-    LongNumber temp = *this;
-    // LongNumber ans = temp >> (index * 32); 
-    // return ans;
-    for(int i = ARRAY_SIZE - 1; i > index; i--) {
-        temp.data.at(i) = 0;
-    }
+int LongNumber::DigitCount() const {
+    int k = this->bitLength();
 
-    return temp;
+    if(k % 32 > 0)
+        return (k / 32) + 1;    
+    
+    return k / 32;
 }
 
-int LongNumber::DigitCount() const {
-    int count = 64;
-    for( ; data.at(count - 1) == 0 ; ) {
-        count--;
+LongNumber LongNumber::killLastDigits(int index) const{
+    if(index < 0 || index >= ARRAY_SIZE)
+        return LongNumber(0);
 
-        if(count == 0)
-            break;
-    }
+    LongNumber temp = *this;
+    temp = temp >> (index * 32);
 
-    return count;
+    return temp;
 }
 
 LongNumber gcd(LongNumber num1, LongNumber num2) {
@@ -446,23 +440,34 @@ LongNumber lcm(LongNumber num1, LongNumber num2) {
     return (num1 * num2) / gcd(num1, num2); 
 }
 
-LongNumber calculateСoefficient(const int power, const LongNumber& num) {    
-    LongNumber base(1); 
-    base.shiftDigitsToHigh(2 * power);
+LongNumber calculateСoefficient(const LongNumber& modulus, int k) {
+    LongNumber coef(1);
+    coef.shiftDigitsToHigh(2 * k);
 
-    return base / num;
+    return coef / modulus;
 }
 
-LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& coefficient) {
-    int k = n.DigitCount();
-    LongNumber q = x.killLastDigits(k - 1);
-    q = q * coefficient;
+LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& mu) {
+    int k = x.DigitCount();
+    std::cout << x.DigitCount() << std::endl; 
+    std::cout << n.DigitCount() << std::endl; 
+
+    LongNumber q(1);
+    q = x.killLastDigits(k - 1);
+    q = q * mu;
+    std::cout << q.DigitCount() << std::endl; 
     q = q.killLastDigits(k + 1);
-    std::cout << "q: " << q.toHexString() << std::endl;
 
-    LongNumber reduction = x - q * n;
-    while(reduction >= n)
-        reduction = reduction - n;
+    LongNumber remainder = x - (q * n);
+    std::cout << "q: " << q.toHexString() << std::endl; 
+    std::cout << "remainder: " << remainder.toHexString() << std::endl; 
+    std::cout << "n: " << n.toHexString() << std::endl; 
 
-    return reduction; 
+    while(remainder >= n) {
+        remainder = remainder - n;
+        // std::cout << "asdasd\n";
+    }
+
+    std::cout << "WE ARE OUT OF CYCLE!!!" << std::endl;
+    return remainder;
 }
