@@ -209,8 +209,8 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
         }
     }
 
-    if(borrow == 1) {
-        std::runtime_error error("Error: Bigger number is subtracted from the smaller.");
+    if(borrow != 0) {
+        std::runtime_error error("Error: Bigger number is subtracted from the smaller one");
         throw(error);
     }
 
@@ -218,7 +218,7 @@ LongNumber LongNumber::operator - (const LongNumber& other) {
 }
 
 LongNumber LongNumber::operator >> (const int index) const {
-    if(index <= 0 || index >= ARRAY_SIZE)
+    if(index <= 0 || index >= ARRAY_SIZE * 32)
         return *this;
     
     uint32_t carry = 0;
@@ -250,7 +250,7 @@ LongNumber LongNumber::operator >> (const int index) const {
 }
 
 LongNumber LongNumber::operator << (const int index) const {
-    if(index <= 0 || index >= ARRAY_SIZE)
+    if(index <= 0 || index >= ARRAY_SIZE * 32)
         return *this;
     
     uint32_t carry = 0;
@@ -285,6 +285,9 @@ std::pair<LongNumber, LongNumber> LongNumber::LongDivMod(const LongNumber& divis
     if (*this == divisor)
         return std::make_pair(LongNumber(1), LongNumber(0));
 
+    if(*this < divisor)
+        return std::make_pair(LongNumber(0), LongNumber(*this));
+
     int divisorBitLength = divisor.bitLength();
     LongNumber remainder = *this;
     LongNumber quotient(0);
@@ -310,7 +313,7 @@ LongNumber LongNumber::operator / (const LongNumber& divisor) {
     return ans.first;
 }
 
-LongNumber LongNumber::operator % (const LongNumber& divisor) {
+LongNumber LongNumber::operator % (const LongNumber& divisor) const {
     auto ans = LongDivMod(divisor);
     return ans.second;
 }
@@ -396,19 +399,13 @@ LongNumber LongNumber::generateRandomNumber(const int numberOfDigits) {
     return randomLongNumber;
 }
 
-LongNumber LongNumber::killLastDigits(int index) {
-    LongNumber temp = *this;
-    LongNumber ans = temp >> (index * 32); 
-    return ans;
-}
-
 int LongNumber::DigitCount() const {
-    for(int i = ARRAY_SIZE - 1; i >= 0; i--) {
-        if (i == 0)
-            return i;
-    }
+    int k = this->bitLength();
 
-    return -1;
+    if(k % 32 > 0)
+        return (k / 32) + 1;    
+
+    return k / 32;
 }
 
 LongNumber gcd(LongNumber num1, LongNumber num2) {
@@ -433,27 +430,23 @@ LongNumber lcm(LongNumber num1, LongNumber num2) {
     return (num1 * num2) / gcd(num1, num2); 
 }
 
-LongNumber calculateСoefficient(const int power, const LongNumber& num) {
-    if(power == 32) {
-        std::cout << "Error: power is too big, calceling...\n";
-        return LongNumber();
-    }
-    
-    LongNumber base(1); 
-    base.shiftDigitsToHigh(2 * power);
+LongNumber precalculations(const LongNumber& modulus) {
+    int k = modulus.DigitCount();
+    LongNumber mu(1);
+    mu = mu << (2 * 32 * k);
 
-    return base / num;
+    return mu / modulus;
 }
 
-LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& coefficient) {
-    int k = n.DigitCount();
-    LongNumber q = x.killLastDigits(k - 1);
-    q = q * coefficient;
-    q = q.killLastDigits(k + 1);
+LongNumber reduciton(LongNumber val, const LongNumber& modulus, const LongNumber& mu) {
+    int k = modulus.DigitCount();
+    LongNumber q = val >> ((k - 1) * 32); 
+    q = q * mu;
+    q = q >> ((k + 1) * 32);
 
-    LongNumber reduction = x - q * n;
-    while(reduction >= n)
-        reduction = reduction - n;
+    LongNumber reduction = val - q * modulus;
+    while(reduction >= modulus)
+        reduction = reduction - modulus;
 
-    return reduction; 
+    return reduction;
 }

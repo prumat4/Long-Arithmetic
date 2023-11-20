@@ -24,33 +24,25 @@ LongNumberMod& LongNumberMod::operator = (const LongNumberMod& other) {
 }
 
 LongNumberMod LongNumberMod::operator + (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
-
     LongNumber temp = this->number + other.number;
-    LongNumber sum = BarretReduction(temp, modulus, coefficient);
+    LongNumber sum = temp % modulus;
     
     LongNumberMod res(sum);
     return res;
 }
 
 LongNumberMod LongNumberMod::operator - (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
-
     LongNumber temp = this->number - other.number;
-    LongNumber diff = BarretReduction(temp, modulus, coefficient);
-    LongNumberMod res(diff);
+    LongNumber sub = temp % modulus;
+    
+    LongNumberMod res(sub);
     return res;
 }
 
 LongNumberMod LongNumberMod::operator * (const LongNumberMod& other) {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, other.number);
-
     LongNumber temp = this->number * other.number;
-    LongNumber mul = BarretReduction(temp, modulus, coefficient);
-
+    LongNumber mul = temp % modulus;
+    
     LongNumberMod res(mul);
     return res;
 }
@@ -60,33 +52,29 @@ bool LongNumberMod::operator == (const LongNumberMod &other) const {
 }
 
 LongNumberMod LongNumberMod::toSquare () {
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, number);
-
     LongNumber temp = number.toSquare();
-    LongNumber square = BarretReduction(temp, modulus, coefficient);
-
+    LongNumber square = temp % modulus;
+    
     LongNumberMod res(square);
     return res;
 }
 
 LongNumberMod LongNumberMod::toPowerOf(const LongNumberMod& power) {
-    LongNumber temp(1);
-    int k = number.DigitCount();
-    LongNumber coefficient = calculateСoefficient(k, number);
-    std::string powerInBinary = power.number.toBinaryString();
+    int k = modulus.DigitCount();
+    LongNumber C(1);
+    LongNumber mult = number % modulus;
 
-    for(int i = powerInBinary.size() - 1; i >= 0; i--) {
-        if(powerInBinary.at(i) == '1') {
-            temp = BarretReduction(temp * number, modulus, coefficient);
-        }
+    LongNumber mu = precalculations(modulus);
 
-        if(i > 0)
-            number = BarretReduction(number.toSquare(), modulus, coefficient);
+    std::string binaryRepresentation = power.number.toBinaryString();
+    for (int i = binaryRepresentation.size() - 1; i >= 0; i--) {
+        if(binaryRepresentation.at(i) == '1')
+            C = reduciton(C * mult, modulus, mu);
+        
+        mult = reduciton(mult.toSquare(), modulus, mu);
     }
-
-    LongNumberMod res(number);
-    return res;
+    
+    return LongNumberMod(C);
 }
 
 void LongNumberMod::generateRandomNumber(int size) {
