@@ -70,7 +70,6 @@ LongNumberMod LongNumberMod::toPowerOf(const LongNumberMod& power) {
     for (int i = binaryRepresentation.size() - 1; i >= 0; i--) {
         if(binaryRepresentation.at(i) == '1')
             C = reduciton(C * mult, modulus, mu);
-        
         mult = reduciton(mult.toSquare(), modulus, mu);
     }
     
