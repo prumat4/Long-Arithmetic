@@ -9,23 +9,27 @@ int main() {
     LongNumberMod ln2(num2);
     ln1.initializeModulus(mod);
 
-    // std::cout << ln1.getNumHex() << std::endl;
-    // std::cout << ln2.getNumHex() << std::endl;
+    std::cout << ln1.getNumHex() << std::endl;
+    std::cout << ln2.getNumHex() << std::endl;
     
-    // LongNumberMod ln3 = ln1 + ln2;
-    // std::cout << ln3.getNumHex() << std::endl;
+    LongNumberMod ln3 = ln1 + ln2;
+    std::cout << "plus: " << ln3.getNumHex() << std::endl;
     
-    // ln3 = ln1 - ln2;
-    // std::cout << ln3.getNumHex() << std::endl;
+    ln3 = ln1 - ln2;
+    std::cout << "minus: " <<ln3.getNumHex() << std::endl;
     
-    // ln3 = ln1 * ln2;
-    // std::cout << ln3.getNumHex() << std::endl;
+    ln3 = ln1 * ln2;
+    std::cout << "mult: " <<ln3.getNumHex() << std::endl;
 
-    auto ln3 = ln1.toPowerOf(ln2);
-    std::cout << ln3.getNumHex() << std::endl;
+    ln3 = ln1.toSquare();
+    std::cout << "square: " << ln3.getNumHex() << std::endl;
 
-    // auto n = gcd(num1, num2);
-    // std::cout << n.toHexString() << std::endl;
+
+    ln3 = ln1.toPowerOf(ln2);
+    std::cout << "power: " << ln3.getNumHex() << std::endl;
+
+    auto res = gcd(num1, num2);
+    std::cout << "gcd: " << res.toHexString() << std::endl;
 
     return 0;
 }
