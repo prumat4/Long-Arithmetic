@@ -68,17 +68,3 @@ TEST_F(LongNumberModTests, MultiplicationAndAdditionOperatorTest) {
     auto ans2 = ln1 * count;
     EXPECT_EQ(ans1, ans2);
 }
-
-// runs for too much time
-// TEST_F(LongNumberModTests, EulersTotientTest) {
-//     ln1 = LongNumber("8349C1D0A8B38D63B809DEB8B2A8A3");
-//     ln2 = LongNumber("6"); 
-//     modulus = LongNumber("7");
-//     ln1.initializeModulus(modulus); 
-
-//     auto ans1 = ln1.toPowerOf(ln2);
-//     LongNumber one("1");
-//     LongNumberMod oneMod(one);
-//     EXPECT_EQ(ans1, oneMod);
-
-// }

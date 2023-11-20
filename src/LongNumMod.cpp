@@ -60,23 +60,21 @@ LongNumberMod LongNumberMod::toSquare () {
 }
 
 LongNumberMod LongNumberMod::toPowerOf(const LongNumberMod& power) {
-    int k = number.DigitCount();
-    LongNumber coef = calculateСoefficient(this->modulus, 2*k);
-    LongNumber mult(number);
+    int k = modulus.DigitCount();
+    LongNumber C(1);
+    LongNumber mult = number % modulus;
+
+    LongNumber mu = precalculations(modulus);
 
     std::string binaryRepresentation = power.number.toBinaryString();
-
-    for(int i = binaryRepresentation.size() - 1; i >= 0; i--) {
+    for (int i = binaryRepresentation.size() - 1; i >= 0; i--) {
         if(binaryRepresentation.at(i) == '1')
-            mult = BarretReduction(mult * number, modulus, coef);
+            C = reduciton(C * mult, modulus, mu);
         
-        if(i > 0) {
-            number = BarretReduction(number.toSquare(), modulus, coef);
-        }
+        mult = reduciton(mult.toSquare(), modulus, mu);
     }
     
-    LongNumberMod res(mult);
-    return res;
+    return LongNumberMod(C);
 }
 
 void LongNumberMod::generateRandomNumber(int size) {

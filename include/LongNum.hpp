@@ -52,12 +52,11 @@ public:
     std::string toBinaryString() const;
     void fromBinaryString(const std::string& binaryString);
     std::string toHexString() const;
-    LongNumber killLastDigits(int index) const;
     int DigitCount() const;
     LongNumber generateRandomNumber(const int numberOfDigits);
 };
 
 LongNumber gcd(LongNumber num1, LongNumber num2);
 LongNumber lcm(LongNumber num1, LongNumber num2);
-LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& coefficient);
-LongNumber calculateСoefficient(const LongNumber& num, int k);
+LongNumber precalculations(const LongNumber& modulus);
+LongNumber reduciton(LongNumber val, const LongNumber& modulus, const LongNumber& mu);

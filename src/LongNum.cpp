@@ -404,18 +404,8 @@ int LongNumber::DigitCount() const {
 
     if(k % 32 > 0)
         return (k / 32) + 1;    
-    
+
     return k / 32;
-}
-
-LongNumber LongNumber::killLastDigits(int index) const{
-    if(index < 0 || index >= ARRAY_SIZE)
-        return LongNumber(0);
-
-    LongNumber temp = *this;
-    temp = temp >> (index * 32);
-
-    return temp;
 }
 
 LongNumber gcd(LongNumber num1, LongNumber num2) {
@@ -440,31 +430,23 @@ LongNumber lcm(LongNumber num1, LongNumber num2) {
     return (num1 * num2) / gcd(num1, num2); 
 }
 
-LongNumber calculateСoefficient(const LongNumber& modulus, int k) {
-    LongNumber coef(1);
-    coef.shiftDigitsToHigh(2 * k);
+LongNumber precalculations(const LongNumber& modulus) {
+    int k = modulus.DigitCount();
+    LongNumber mu(1);
+    mu = mu << (2 * 32 * k);
 
-    return coef / modulus;
+    return mu / modulus;
 }
 
-LongNumber BarretReduction(LongNumber x, LongNumber n, const LongNumber& mu) {
-    int k = x.DigitCount();
-    std::cout << x.DigitCount() << std::endl; 
-    std::cout << n.DigitCount() << std::endl; 
-
-    LongNumber q(1);
-    q = x.killLastDigits(k - 1);
+LongNumber reduciton(LongNumber val, const LongNumber& modulus, const LongNumber& mu) {
+    int k = modulus.DigitCount();
+    LongNumber q = val >> ((k - 1) * 32); 
     q = q * mu;
-    std::cout << q.DigitCount() << std::endl; 
-    q = q.killLastDigits(k + 1);
+    q = q >> ((k + 1) * 32);
 
-    LongNumber remainder = x - (q * n);
-    std::cout << "q: " << q.toHexString() << std::endl; 
-    std::cout << "remainder: " << remainder.toHexString() << std::endl; 
-    std::cout << "n: " << n.toHexString() << std::endl; 
+    LongNumber reduction = val - q * modulus;
+    while(reduction >= modulus)
+        reduction = reduction - modulus;
 
-    while(remainder >= n) 
-        remainder = remainder - n;
-
-    return remainder;
+    return reduction;
 }
